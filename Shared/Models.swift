@@ -33,6 +33,9 @@ struct Recipe: Codable, Identifiable, Hashable {
     var image: String?
     var sourceServings: Int?
     var sourceFile: String?
+    var sourceTotalMinutes: Int?
+    var sourcePrepMinutes: Int?
+    var sourceCookMinutes: Int?
     var containsEgg: Bool { ingredients.contains { IngredientRules.containsEgg($0.name) } }
     var mainIngredient: String { ingredients.first?.name.capitalized ?? "Vegetables" }
 }
@@ -127,8 +130,16 @@ enum PantryDisk {
     static func read() throws -> PantryData {
         guard FileManager.default.fileExists(atPath: url.path) else { var d = PantryData(); d.recipes = seedRecipes(); return d }
         var d = try JSONDecoder().decode(PantryData.self, from: Data(contentsOf: url))
+        let seeds = seedRecipes()
+        let byID = Dictionary(uniqueKeysWithValues: seeds.map { ($0.id, $0) })
+        for index in d.recipes.indices {
+            guard let seed = byID[d.recipes[index].id] else { continue }
+            if d.recipes[index].sourceTotalMinutes == nil { d.recipes[index].sourceTotalMinutes = seed.sourceTotalMinutes }
+            if d.recipes[index].sourcePrepMinutes == nil { d.recipes[index].sourcePrepMinutes = seed.sourcePrepMinutes }
+            if d.recipes[index].sourceCookMinutes == nil { d.recipes[index].sourceCookMinutes = seed.sourceCookMinutes }
+        }
         let known = Set(d.recipes.map(\.id))
-        d.recipes.append(contentsOf: seedRecipes().filter { !known.contains($0.id) })
+        d.recipes.append(contentsOf: seeds.filter { !known.contains($0.id) })
         return d
     }
     static func seedRecipes() -> [Recipe] {

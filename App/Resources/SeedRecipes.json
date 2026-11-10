@@ -4512,7 +4512,8 @@
     "source": "https://www.instagram.com/reel/DWlvCvJDDr1/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Ameero Ki Dal Recipe.txt"
+    "sourceFile": "Ameero Ki Dal Recipe.txt",
+    "sourceTotalMinutes": 390
   },
   {
     "id": "personal-d71ca318f344",
@@ -4575,7 +4576,10 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Cremige Tomaten-Spinat-Parmesan-Pasta.pdf"
+    "sourceFile": "Cremige Tomaten-Spinat-Parmesan-Pasta.pdf",
+    "sourceTotalMinutes": 45,
+    "sourcePrepMinutes": 10,
+    "sourceCookMinutes": 35
   },
   {
     "id": "personal-8f739173b355",
@@ -4638,7 +4642,8 @@
     "source": "https://www.instagram.com/reel/De1ZsUpOXm4/",
     "image": null,
     "sourceServings": 2,
-    "sourceFile": "Dahi Wale Aloo Recipe.txt"
+    "sourceFile": "Dahi Wale Aloo Recipe.txt",
+    "sourceTotalMinutes": 30
   },
   {
     "id": "personal-c964aff38807",
@@ -4765,7 +4770,8 @@
     "source": "https://www.instagram.com/reel/DcX_hdeTEaI/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Dal Makhani Recipe.txt"
+    "sourceFile": "Dal Makhani Recipe.txt",
+    "sourceTotalMinutes": 60
   },
   {
     "id": "personal-4177d57ab768",
@@ -4856,7 +4862,8 @@
     "source": "https://www.instagram.com/reel/CRdljJ9FBZZ/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Dal Tadka Recipe.txt"
+    "sourceFile": "Dal Tadka Recipe.txt",
+    "sourceTotalMinutes": 50
   },
   {
     "id": "personal-2227fdace5c4",
@@ -4943,7 +4950,8 @@
     "source": "https://www.instagram.com/reel/DZ9YO9SsclV/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Dhaba Style Paneer Bhurji.txt"
+    "sourceFile": "Dhaba Style Paneer Bhurji.txt",
+    "sourceTotalMinutes": 20
   },
   {
     "id": "personal-264d323b850c",
@@ -5014,7 +5022,10 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Hing Wale Aloo Matar.pdf"
+    "sourceFile": "Hing Wale Aloo Matar.pdf",
+    "sourceTotalMinutes": 25,
+    "sourcePrepMinutes": 5,
+    "sourceCookMinutes": 20
   },
   {
     "id": "personal-afbafc07d5f2",
@@ -5081,7 +5092,9 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Instant Aloo Matar Ki Sabzi.pdf"
+    "sourceFile": "Instant Aloo Matar Ki Sabzi.pdf",
+    "sourceTotalMinutes": 25,
+    "sourceCookMinutes": 25
   },
   {
     "id": "personal-e9bedab0ae52",
@@ -5140,7 +5153,8 @@
     "source": "https://www.instagram.com/reel/C65n5mnvpKC/",
     "image": null,
     "sourceServings": 2,
-    "sourceFile": "Kanda Poha Recipe.txt"
+    "sourceFile": "Kanda Poha Recipe.txt",
+    "sourceTotalMinutes": 20
   },
   {
     "id": "personal-852837684c6f",
@@ -5275,7 +5289,8 @@
     "source": "https://www.instagram.com/reel/DapJz4CR4do/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Mumbai Style Pav Bhaji.txt"
+    "sourceFile": "Mumbai Style Pav Bhaji.txt",
+    "sourceTotalMinutes": 45
   },
   {
     "id": "personal-0753c2aa1833",
@@ -5386,7 +5401,10 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Palak Paneer.pdf"
+    "sourceFile": "Palak Paneer.pdf",
+    "sourceTotalMinutes": 45,
+    "sourcePrepMinutes": 15,
+    "sourceCookMinutes": 30
   },
   {
     "id": "personal-42f179482fd3",
@@ -5469,7 +5487,8 @@
     "source": "https://www.instagram.com/reel/DXYtUzoETxn/",
     "image": null,
     "sourceServings": 2,
-    "sourceFile": "Rajma and Moong Dal Tikkis.txt"
+    "sourceFile": "Rajma and Moong Dal Tikkis.txt",
+    "sourceTotalMinutes": 30
   },
   {
     "id": "personal-c6aa1f685ce5",
@@ -5512,7 +5531,8 @@
     "source": "https://www.instagram.com/reel/DXRcmxrk1zI/",
     "image": null,
     "sourceServings": 1,
-    "sourceFile": "Refreshing Mint Lemonade.txt"
+    "sourceFile": "Refreshing Mint Lemonade.txt",
+    "sourceTotalMinutes": 5
   },
   {
     "id": "personal-bc27fe704e7f",
@@ -5591,7 +5611,10 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Restaurant Style Dal Makhani.pdf"
+    "sourceFile": "Restaurant Style Dal Makhani.pdf",
+    "sourceTotalMinutes": 120,
+    "sourcePrepMinutes": 20,
+    "sourceCookMinutes": 100
   },
   {
     "id": "personal-863d9d26c1cf",
@@ -5662,7 +5685,8 @@
     "source": "https://www.instagram.com/reel/DdMGRr1vLnW/",
     "image": null,
     "sourceServings": 2,
-    "sourceFile": "Shengdanyachi Bhindi Recipe.txt"
+    "sourceFile": "Shengdanyachi Bhindi Recipe.txt",
+    "sourceTotalMinutes": 15
   },
   {
     "id": "personal-80cf9c2dcdd3",
@@ -5725,7 +5749,10 @@
     "source": "mealplanner:personal",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Sooji Masala Poori.pdf"
+    "sourceFile": "Sooji Masala Poori.pdf",
+    "sourceTotalMinutes": 45,
+    "sourcePrepMinutes": 25,
+    "sourceCookMinutes": 20
   },
   {
     "id": "personal-b6472d2d68f7",
@@ -5808,6 +5835,7 @@
     "source": "https://www.instagram.com/reel/DJTU9w8hPDr/",
     "image": null,
     "sourceServings": 4,
-    "sourceFile": "Suji Poha Bites Recipe.txt"
+    "sourceFile": "Suji Poha Bites Recipe.txt",
+    "sourceTotalMinutes": 30
   }
 ]

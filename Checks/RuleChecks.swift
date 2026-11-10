@@ -96,6 +96,9 @@ import Foundation
         check(MealTypeEngine.types(breakfast, details: customDetails) == ["Dinner"], "User override takes priority")
         customDetails.mealTypes = []
         check(MealTypeEngine.types(breakfast, details: customDetails).isEmpty, "User may clear categories")
+        check(MethodSteps.extract("1. Chop onions.\n\n2. Cook until soft.\n\n3. Serve.") == ["Chop onions.", "Cook until soft.", "Serve."], "Numbered methods preserve ordered steps")
+        check(MethodSteps.extract("1 Heat oil.\n2 Add onions.") == ["Heat oil.", "Add onions."], "PDF methods split into steps")
+        check(MethodSteps.extract("Mix ingredients.\n\nBake until golden.").count == 2, "Paragraph methods remain readable")
         let url = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "App/Resources/SeedRecipes.json")
         let recipes = try JSONDecoder().decode([Recipe].self, from: Data(contentsOf: url))
         check(recipes.count >= 109 && Set(recipes.map(\.id)).count == recipes.count, "Recipe catalogue integrity")

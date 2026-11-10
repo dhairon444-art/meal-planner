@@ -186,3 +186,7 @@ Recipes is the first tab and opens on Discover. Groceries is accessed from the R
 ## 0.6.0 decision update · 11 November 2026
 
 The selected day’s morning, afternoon and evening are grouped in one section below the calendar. Recipe details have a prominent Add to meal plan action. Discover includes All, Breakfast, Snacks, Lunch and Dinner filters, with editable suggested classifications.
+
+## 0.7.0 update · 11 November 2026
+
+Recipe results use compact rows with ingredient counts and sourced total times. The recipe page uses an image-led layout, Ingredients/Steps/Notes navigation, numbered source instructions, and an action bar outside the content for planning and groceries. Prep and cook times are displayed where explicitly present in the imported source. Meal-type editing is available by long-pressing a recipe in Discover.

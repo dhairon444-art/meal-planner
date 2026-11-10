@@ -168,3 +168,23 @@ enum MealTypeEngine {
         return result
     }
 }
+
+
+enum MethodSteps {
+    static func extract(_ text: String) -> [String] {
+        let normalized = text.replacingOccurrences(of: "\r\n", with: "\n").replacingOccurrences(of: "\r", with: "\n")
+        let pattern = #"(?m)^\s*(\d+)[.)]?\s+"#
+        guard let regex = try? NSRegularExpression(pattern: pattern) else { return [text] }
+        let matches = regex.matches(in: normalized, range: NSRange(normalized.startIndex..., in: normalized))
+        if !matches.isEmpty {
+            return matches.enumerated().compactMap { index, match in
+                let start = match.range.location + match.range.length
+                let end = index + 1 < matches.count ? matches[index + 1].range.location : (normalized as NSString).length
+                guard end >= start else { return nil }
+                let part = (normalized as NSString).substring(with: NSRange(location: start, length: end - start)).trimmingCharacters(in: .whitespacesAndNewlines)
+                return part.isEmpty ? nil : part
+            }
+        }
+        return normalized.components(separatedBy: "\n\n").map { $0.trimmingCharacters(in: .whitespacesAndNewlines) }.filter { !$0.isEmpty }
+    }
+}
