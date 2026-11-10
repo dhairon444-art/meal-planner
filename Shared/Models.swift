@@ -31,6 +31,8 @@ struct Recipe: Codable, Identifiable, Hashable {
     var instructions: String
     var source: String
     var image: String?
+    var sourceServings: Int?
+    var sourceFile: String?
     var containsEgg: Bool { ingredients.contains { IngredientRules.containsEgg($0.name) } }
     var mainIngredient: String { ingredients.first?.name.capitalized ?? "Vegetables" }
 }
@@ -40,6 +42,7 @@ struct ShoppingItem: Codable, Identifiable, Hashable {
     var quantity: String
     var purchased = false
     var estimatedCost: Double?
+    var recipeManaged: Bool?
 }
 struct UserProfile: Codable, Hashable {
     var name = ""
@@ -92,11 +95,12 @@ struct PantryData: Codable {
     var planApproved = false
     var planningStart = Calendar.current.startOfDay(for: .now)
     var planningMealCount = 7
+    var selectedRecipeIDs: [String] = []
     init(groceries: [Grocery] = [], shopping: [ShoppingItem] = [], recipes: [Recipe] = [], excludeEggs: Bool = false) {
         self.groceries = groceries; self.shopping = shopping; self.recipes = recipes; self.excludeEggs = excludeEggs
     }
     enum CodingKeys: String, CodingKey {
-        case groceries, shopping, recipes, excludeEggs, profile, plans, history, favourites, ratings, recipeDetails, planApproved, planningStart, planningMealCount
+        case groceries, shopping, recipes, excludeEggs, profile, plans, history, favourites, ratings, recipeDetails, planApproved, planningStart, planningMealCount, selectedRecipeIDs
     }
     init(from decoder: Decoder) throws {
         let c = try decoder.container(keyedBy: CodingKeys.self)
@@ -113,6 +117,7 @@ struct PantryData: Codable {
         planApproved = try c.decodeIfPresent(Bool.self, forKey: .planApproved) ?? false
         planningStart = try c.decodeIfPresent(Date.self, forKey: .planningStart) ?? Calendar.current.startOfDay(for: .now)
         planningMealCount = try c.decodeIfPresent(Int.self, forKey: .planningMealCount) ?? 7
+        selectedRecipeIDs = try c.decodeIfPresent([String].self, forKey: .selectedRecipeIDs) ?? []
     }
 }
 

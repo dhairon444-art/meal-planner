@@ -48,7 +48,7 @@ struct ShoppingItemEditor: View {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Save") {
                     guard store.permitted(item.name) else { store.notice = "This item conflicts with your dietary restrictions."; return }
-                    if let i = store.data.shopping.firstIndex(where: { $0.id == item.id }) { store.data.shopping[i] = item; store.save() }; dismiss()
+                    if let i = store.data.shopping.firstIndex(where: { $0.id == item.id }) { item.recipeManaged = false; store.data.shopping[i] = item; store.save() }; dismiss()
                 }.disabled(item.name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty) }
             }
         }

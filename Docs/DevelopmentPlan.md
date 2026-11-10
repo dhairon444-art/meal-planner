@@ -178,3 +178,7 @@ flowchart LR
 - 0.2.0 (3): implement the chart’s profiles, image entry, independent recommendations, stock checks, weekly plans, serving adjustments, consolidated shopping, cooking feedback, freshness and backups. Cost/budget work deferred at user direction. Source-controlled rule and migration checks added.
 
 - 0.4.0 (5): added scrollable item-aware quantities, six original vegetarian Indian recipes, and targeted Indian vegetarian/vegan searches through TheMealDB.
+
+## 0.5.0 decision update · 11 November 2026
+
+Recipes is the first tab and opens on Discover. Groceries is accessed from the Recipes toolbar; Pantry and Shopping remain together. Selecting a recipe or adding it to a meal slot automatically combines all selected recipe requirements and subtracts pantry stock once, preserving manually added shopping entries. Plan shows a calendar above image-only morning, afternoon and evening slots. Seventeen recipes from iCloud Drive/Downloads/Meals are bundled with source servings where available. These decisions replace older navigation and shopping-preview descriptions above. Recipe photographs for the personal imports remain to be created.

@@ -21,8 +21,9 @@ import WidgetKit
         do { data = try PantryDisk.read() } catch { notice = "Could not refresh saved data. Your current session has been kept." }
     }
     func save() {
-        guard persists else { return }
+        if !persists { recalculateRecipeShopping(); return }
         guard !readOnly else { notice = "Restore a valid backup before saving changes. Your existing file has been preserved."; return }
+        recalculateRecipeShopping()
         do { try PantryDisk.write(data) }
         catch { notice = "Your changes could not be saved: \(error.localizedDescription)"; return }
         do { try PantryDisk.updateWidget(data); WidgetCenter.shared.reloadAllTimelines() }
@@ -30,7 +31,7 @@ import WidgetKit
     }
     func permitted(_ name: String) -> Bool { IngredientRules.isVegetarian(name) && !IngredientRules.conflicts(name, profile: data.profile, excludeEggs: data.excludeEggs) }
     func add(_ groceries: [Grocery]) { data.groceries.append(contentsOf: groceries); save() }
-    func details(_ recipe: Recipe) -> RecipeDetails { data.recipeDetails[recipe.id] ?? RecipeDetails() }
+    func details(_ recipe: Recipe) -> RecipeDetails { data.recipeDetails[recipe.id] ?? RecipeDetails(baseServings: recipe.sourceServings) }
     func factor(_ recipe: Recipe, servings: Int?) -> Double {
         guard let servings, let base = details(recipe).baseServings, base > 0 else { return 1 }
         return Double(servings) / Double(base)
@@ -38,6 +39,33 @@ import WidgetKit
     func toggleFavourite(_ recipe: Recipe) {
         if data.favourites.contains(recipe.id) { data.favourites.removeAll { $0 == recipe.id } } else { data.favourites.append(recipe.id) }
         save()
+    }
+    func selectRecipe(_ recipe: Recipe) {
+        guard RecommendationEngine.allowed(recipe, data: data) else { notice = "This recipe conflicts with your dietary restrictions."; return }
+        if !data.selectedRecipeIDs.contains(recipe.id) { data.selectedRecipeIDs.append(recipe.id) }
+        save()
+    }
+    func removeSelectedRecipe(_ recipe: Recipe) {
+        data.selectedRecipeIDs.removeAll { $0 == recipe.id }; save()
+    }
+    func recalculateRecipeShopping() {
+        let kept = data.shopping.filter { $0.recipeManaged != true || $0.purchased }
+        let selected = data.recipes.filter { data.selectedRecipeIDs.contains($0.id) && RecommendationEngine.allowed($0, data: data) }
+        let required = ShoppingEngine.combine(selected.flatMap { recipe in
+            StockEngine.requirements(recipe).map(\.ingredient)
+        })
+        var generated: [ShoppingItem] = []
+        for ingredient in required where permitted(ingredient.name) {
+            if var amount = FoodAmount.parse(ingredient.amount) {
+                amount.value -= StockEngine.available(ingredient.name, unit: amount.unit, in: data.groceries)
+                let already = kept.filter { IngredientRules.key($0.name) == IngredientRules.key(ingredient.name) }.compactMap { FoodAmount.parse($0.quantity) }.filter { $0.unit == amount.unit }.reduce(0) { $0 + $1.value }
+                amount.value -= already
+                if amount.value > 0.0001 { generated.append(ShoppingItem(name: ingredient.name, quantity: amount.text, recipeManaged: true)) }
+            } else if !(ingredient.amount.rangeOfCharacter(from: .decimalDigits) == nil && IngredientRules.has(ingredient.name, in: data.groceries)) && !kept.contains(where: { IngredientRules.key($0.name) == IngredientRules.key(ingredient.name) && $0.quantity == ingredient.amount }) {
+                generated.append(ShoppingItem(name: ingredient.name, quantity: ingredient.amount, recipeManaged: true))
+            }
+        }
+        data.shopping = kept + generated
     }
     func buy(_ ingredients: [Ingredient]) {
         for item in ShoppingEngine.combine(ingredients) where permitted(item.name) {
@@ -59,6 +87,7 @@ import WidgetKit
         if let i = data.plans.firstIndex(where: { Calendar.current.isDate($0.date, inSameDayAs: date) && $0.slot == slot }) {
             data.plans[i] = PlannedMeal(date: date, slot: slot, recipeID: recipe.id, servings: servings)
         } else { data.plans.append(PlannedMeal(date: date, slot: slot, recipeID: recipe.id, servings: servings)) }
+        if !data.selectedRecipeIDs.contains(recipe.id) { data.selectedRecipeIDs.append(recipe.id) }
         data.planApproved = false; save()
     }
     func generatePlan() {

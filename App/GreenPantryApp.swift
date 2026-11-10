@@ -15,19 +15,20 @@ import UIKit
 
 struct RootView: View {
     @Environment(PantryStore.self) private var store
-    @State private var selection = 0
+    @State private var selection = 1
     @State private var showShopping = false
+    @State private var showingGroceries = false
     var body: some View {
         @Bindable var store = store
         TabView(selection: $selection) {
-            Tab("Groceries", systemImage: "basket.fill", value: 0) { GroceriesView(shopping: $showShopping) }
-            Tab("Recipes", systemImage: "book.closed.fill", value: 1) { RecipesView() }
+            Tab("Recipes", systemImage: "book.closed.fill", value: 1) { RecipesView(showingGroceries: $showingGroceries) }
             Tab("Plan", systemImage: "calendar", value: 4) { MealPlanView() }
             Tab("Settings", systemImage: "gearshape", value: 3) { SettingsView() }
         }
         .onOpenURL { url in
-            if url.scheme == "greenpantry" { showShopping = url.host == "shopping"; selection = url.host == "shopping" ? 0 : url.host == "settings" ? 3 : 1 }
+            if url.scheme == "greenpantry" { showShopping = url.host == "shopping"; selection = url.host == "settings" ? 3 : 1; showingGroceries = url.host == "shopping" }
         }
+        .sheet(isPresented: $showingGroceries) { GroceriesView(shopping: $showShopping) }
         .alert("Meal Planner", isPresented: Binding(get: { store.notice != nil }, set: { if !$0 { store.notice = nil } })) {
             Button("OK") { store.notice = nil }
         } message: { Text(store.notice ?? "") }

@@ -1,10 +1,11 @@
 import SwiftUI
 
 struct RecipesView: View {
+    @Binding var showingGroceries: Bool
     @Environment(PantryStore.self) private var store
     @State private var search = ""
     @State private var favouritesOnly = false
-    @State private var discover = false
+    @State private var discover = true
     var body: some View {
         NavigationStack {
             List {
@@ -28,7 +29,10 @@ struct RecipesView: View {
                     Link("Recipes provided by TheMealDB", destination: URL(string: "https://www.themealdb.com")!).font(.caption)
                 }
             }.navigationTitle("Recipes").searchable(text: $search, prompt: "Find a meal or ingredient")
-            .toolbar { NavigationLink { ProfileView() } label: { Image(systemName: "person.crop.circle") } }
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) { Button { showingGroceries = true } label: { Label("Groceries", systemImage: "basket") } }
+                ToolbarItem(placement: .topBarTrailing) { NavigationLink { ProfileView() } label: { Image(systemName: "person.crop.circle") } }
+            }
         }
     }
 }
@@ -72,6 +76,11 @@ struct RecipeDetail: View {
                 }
                 Button("Recipe details & servings") { editing = true }
                 if let minutes = store.details(recipe).minutes { Label("\(minutes) minutes · your estimate", systemImage: "clock") }
+                if store.data.selectedRecipeIDs.contains(recipe.id) {
+                    Button("Remove from groceries", systemImage: "checkmark.circle.fill") { store.removeSelectedRecipe(recipe) }
+                } else {
+                    Button("Add ingredients to groceries", systemImage: "basket.badge.plus") { store.selectRecipe(recipe); store.notice = "Missing ingredients were added to Shopping, accounting for your pantry and other selected recipes." }
+                }
                 Button("Add to meal plan", systemImage: "calendar.badge.plus") { planning = true }
             }
             Section("Ingredients") {
@@ -115,6 +124,7 @@ struct RecipeDetail: View {
             }
             Section {
                 if recipe.source == "mealplanner:original" { Text("Meal Planner original recipe") }
+                else if recipe.source == "mealplanner:personal" { Text("Your imported recipe · \(recipe.sourceFile ?? "Meals")") }
                 else if let url = URL(string: recipe.source), url.scheme == "https" { Link("View original recipe", destination: url) }
             }
         }
