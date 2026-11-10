@@ -1,6 +1,6 @@
 # Meal Planner
 
-Private vegetarian iPhone app built in SwiftUI, with on-device Apple Intelligence and Home Screen widgets. Current development version: **0.2.0 (3)**.
+Private vegetarian iPhone app built in SwiftUI, with on-device Apple Intelligence and Home Screen widgets. Current development version: **0.4.0 (5)**.
 
 The app is developed in Xcode and installed over the existing iPhone app. [Development checklist and Mermaid flows](Docs/DevelopmentPlan.md) track the planned features, implementation, tests and remaining decisions. Source history is in the private [GitHub repository](https://github.com/dhairon444-art/meal-planner).
 
@@ -16,7 +16,7 @@ The app is developed in Xcode and installed over the existing iPhone app. [Devel
 
 ## Data and accuracy
 
-- The 86 bundled vegetarian recipes are available offline. TheMealDB provides recipe updates and source pages.
+- The 92 bundled vegetarian recipes are available offline. TheMealDB provides recipe updates and source pages.
 - Grocery organization and substitution suggestions use the on-device Foundation Models framework when available. Manual grocery entry is available otherwise.
 - Photos are processed on-device with Vision. Text extraction and food-label suggestions can miss or misidentify items; review is required.
 - Nutrition facts come from USDA FoodData Central. Ingredient names are sent for lookup; choose the matching food and preparation. Values are per 100 g. Recipe totals are not invented when weights or nutrient coverage are incomplete.
@@ -42,7 +42,7 @@ Use Git commits for completed changes and push them to the private repository. G
 
 ## Checks
 
-Run `Checks/run.sh` on a Mac with Xcode. Checks cover data migration, recommendation independence, dietary filters, quantities, stock readiness, expiry, stock deduction, meal-plan generation, shopping aggregation, purchased stock, cooking history and the 86-recipe catalogue. The signed app build is checked separately with Xcode.
+Run `Checks/run.sh` on a Mac with Xcode. Checks cover data migration, recommendation independence, dietary filters, quantities, stock readiness, expiry, stock deduction, meal-plan generation, shopping aggregation, purchased stock, cooking history and the recipe catalogue. The signed app build is checked separately with Xcode.
 
 ## Sources
 
@@ -50,3 +50,9 @@ Run `Checks/run.sh` on a Mac with Xcode. Checks cover data migration, recommenda
 - [USDA FoodData Central](https://fdc.nal.usda.gov/api-guide/): public-domain nutrition data under CC0. Demo access is limited to 30 requests/hour and 50/day per IP address.
 - [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels): on-device language model integration.
 - [Apple Vision](https://developer.apple.com/documentation/vision): on-device text recognition and image classification.
+
+## Quantity and Indian recipes
+
+After entering an item, scroll to select a quantity and unit. Meal Planner suggests a unit using the item name and on-device intelligence when available; the suggestion is editable. Select an existing pantry or shopping item to change its quantity.
+
+The bundled library includes six Meal Planner original Indian vegetarian recipes. Choose “Update Indian vegetarian recipes” in Recipes to search TheMealDB for additional recipes tagged as Indian and vegetarian or vegan. Source pages remain linked for imported recipes. The provider’s free development catalogue is limited and may return no new matches.

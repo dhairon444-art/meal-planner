@@ -21,12 +21,25 @@ enum OnlineLibrary {
         guard let meals = result["meals"] as? [[String: Any]] else { throw LibraryError(message: "No vegetarian recipe catalogue was returned.") }
         return meals.compactMap { $0["idMeal"] as? String }
     }
+    static func indianVegetarianIDs() async throws -> [String] {
+        let terms = ["dal", "paneer", "chana", "aloo", "masala", "biryani", "samosa", "dosa", "bhaji", "saag", "rajma", "curry", "korma"]
+        var ids = Set<String>()
+        for term in terms {
+            var parts = URLComponents(string: "https://www.themealdb.com/api/json/v1/1/search.php")!
+            parts.queryItems = [URLQueryItem(name: "s", value: term)]
+            let result = try await json(parts.url!)
+            for row in result["meals"] as? [[String: Any]] ?? [] {
+                if ["India", "Indian"].contains(row["strArea"] as? String ?? ""), ["Vegetarian", "Vegan"].contains(row["strCategory"] as? String ?? ""), let id = row["idMeal"] as? String { ids.insert(id) }
+            }
+        }
+        return ids.sorted()
+    }
     static func recipe(id: String) async throws -> Recipe? {
         var components = URLComponents(string: "https://www.themealdb.com/api/json/v1/1/lookup.php")!
         components.queryItems = [URLQueryItem(name: "i", value: id)]
         let result = try await json(components.url!)
         guard let meal = (result["meals"] as? [[String: Any]])?.first,
-              meal["strCategory"] as? String == "Vegetarian",
+              ["Vegetarian", "Vegan"].contains(meal["strCategory"] as? String ?? ""),
               let title = meal["strMeal"] as? String,
               let instructions = meal["strInstructions"] as? String else { return nil }
         let ingredients = (1...20).compactMap { index -> Ingredient? in

@@ -24,6 +24,7 @@ struct RecipesView: View {
                     Button { Task { await store.importRecipes() } } label: {
                         if store.importing { ProgressView(store.importStatus) } else { Label("Update recipe library", systemImage: "arrow.down.circle") }
                     }.disabled(store.importing)
+                    Button("Update Indian vegetarian recipes") { Task { await store.importRecipes(indian: true) } }.disabled(store.importing)
                     Link("Recipes provided by TheMealDB", destination: URL(string: "https://www.themealdb.com")!).font(.caption)
                 }
             }.navigationTitle("Recipes").searchable(text: $search, prompt: "Find a meal or ingredient")
@@ -112,7 +113,10 @@ struct RecipeDetail: View {
                     ForEach(1...5, id: \.self) { Text("\($0) / 5").tag($0) }
                 }
             }
-            Section { Link("View original on TheMealDB", destination: URL(string: recipe.source)!) }
+            Section {
+                if recipe.source == "mealplanner:original" { Text("Meal Planner original recipe") }
+                else if let url = URL(string: recipe.source), url.scheme == "https" { Link("View original recipe", destination: url) }
+            }
         }
         .navigationTitle("Recipe").navigationBarTitleDisplayMode(.inline)
         .onAppear { servings = store.data.profile.householdSize }

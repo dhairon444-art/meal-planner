@@ -40,6 +40,7 @@ struct GroceriesView: View {
     @State private var entry = ""
     @State private var addingPhoto = false
     @State private var editing: ShoppingItem?
+    @State private var quantityTarget: QuantityTarget?
     @FocusState private var focused: Bool
     var body: some View {
         NavigationStack {
@@ -72,16 +73,27 @@ struct GroceriesView: View {
             .toolbar { Button("Add from photo", systemImage: "plus") { addingPhoto = true } }
             .sheet(isPresented: $addingPhoto) { AddGroceriesView(initialInStock: !shopping, photoOnly: true) }
             .sheet(item: $editing) { ShoppingItemEditor(item: $0) }
+            .sheet(item: $quantityTarget) { target in
+                QuantityWheel(name: target.name) { quantity in
+                    if target.shopping, let index = store.data.shopping.firstIndex(where: { $0.id == target.id }) { store.data.shopping[index].quantity = quantity; store.save() }
+                    else if !target.shopping, let index = store.data.groceries.firstIndex(where: { $0.id == target.id }) { store.data.groceries[index].quantity = quantity; store.save() }
+                }
+            }
         }
     }
     private func add() {
         let name = entry.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !name.isEmpty else { return }
         guard store.permitted(name) else { store.notice = "This ingredient conflicts with your dietary restrictions."; return }
-        if shopping { store.buy([Ingredient(name: name, amount: "")]) }
+        if shopping {
+            let item = ShoppingItem(name: name, quantity: "")
+            store.data.shopping.append(item); store.save()
+            quantityTarget = QuantityTarget(id: item.id, name: name, shopping: true)
+        }
         else {
             let item = Grocery(name: name, quantity: "", category: "Other")
             store.add([item])
+            quantityTarget = QuantityTarget(id: item.id, name: name, shopping: false)
             Task {
                 if PantryIntelligence.available, let parsed = try? await PantryIntelligence.parse(name), let category = parsed.first?.category,
                    ["Produce", "Grains", "Pulses", "Dairy", "Eggs", "Nuts & seeds", "Condiments", "Other"].contains(category),
@@ -96,7 +108,7 @@ struct GroceriesView: View {
             }
         }
         entry = ""
-        focused = true
+        focused = false
     }
 }
 

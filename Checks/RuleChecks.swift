@@ -76,7 +76,7 @@ import Foundation
         check(restored.history == store.data.history && restored.plans == store.data.plans && restored.profile == store.data.profile, "Expanded data round trip")
         let url = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "App/Resources/SeedRecipes.json")
         let recipes = try JSONDecoder().decode([Recipe].self, from: Data(contentsOf: url))
-        check(recipes.count == 86 && Set(recipes.map(\.id)).count == 86, "Recipe catalogue integrity")
+        check(recipes.count >= 92 && Set(recipes.map(\.id)).count == recipes.count, "Recipe catalogue integrity")
         check(recipes.allSatisfy { !$0.instructions.isEmpty && $0.ingredients.allSatisfy { IngredientRules.isVegetarian($0.name) } }, "Vegetarian library")
         print("Passed \(count) checks: migration, preference-based recommendations, restrictions, units, readiness, stock consumption, meal plans, consolidated shopping, purchases, history and catalogue integrity.")
     }

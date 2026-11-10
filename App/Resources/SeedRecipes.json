@@ -4184,5 +4184,211 @@
     "instructions": "step 1\r\nHeat the oil in a medium-size, lidded saucepan. Add the ginger and garlic, then stir-fry for about 5 mins. Add the squash, soy sauce, sugar and stock. Cover, then simmer for 10 mins. Remove the lid, add the green beans, then cook for 3 mins more until the squash and beans are tender. Stir the spring onions through at the last minute, then sprinkle with coriander and serve with rice.",
     "source": "https://www.themealdb.com/meal/53236",
     "image": "https://www.themealdb.com/images/media/meals/4uje7l1763762276.jpg"
+  },
+  {
+    "id": "mp-rajma",
+    "title": "Rajma masala",
+    "ingredients": [
+      {
+        "name": "kidney beans",
+        "amount": "400 g"
+      },
+      {
+        "name": "onion",
+        "amount": "1"
+      },
+      {
+        "name": "tomato",
+        "amount": "2"
+      },
+      {
+        "name": "garlic",
+        "amount": "2 cloves"
+      },
+      {
+        "name": "ginger",
+        "amount": "10 g"
+      },
+      {
+        "name": "ground cumin",
+        "amount": "5 g"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Cook onion, garlic and ginger in oil. Add cumin and chopped tomato; simmer until soft. Add cooked kidney beans and a little water, simmer for 15 minutes, and season to taste.",
+    "source": "mealplanner:original",
+    "image": null
+  },
+  {
+    "id": "mp-poha",
+    "title": "Vegetable poha",
+    "ingredients": [
+      {
+        "name": "poha",
+        "amount": "150 g"
+      },
+      {
+        "name": "onion",
+        "amount": "1"
+      },
+      {
+        "name": "potato",
+        "amount": "1"
+      },
+      {
+        "name": "peas",
+        "amount": "100 g"
+      },
+      {
+        "name": "turmeric",
+        "amount": "2 g"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Rinse poha briefly and drain. Cook diced potato and onion in oil until tender. Add peas and turmeric, then fold in poha and warm through. Season to taste.",
+    "source": "mealplanner:original",
+    "image": null
+  },
+  {
+    "id": "mp-moong",
+    "title": "Moong dal tadka",
+    "ingredients": [
+      {
+        "name": "moong dal",
+        "amount": "200 g"
+      },
+      {
+        "name": "tomato",
+        "amount": "1"
+      },
+      {
+        "name": "turmeric",
+        "amount": "2 g"
+      },
+      {
+        "name": "cumin",
+        "amount": "5 g"
+      },
+      {
+        "name": "garlic",
+        "amount": "2 cloves"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Rinse the dal and simmer with turmeric and water until soft. Cook cumin and garlic in oil, add chopped tomato, and soften. Stir into the dal and season to taste.",
+    "source": "mealplanner:original",
+    "image": null
+  },
+  {
+    "id": "mp-cabbage",
+    "title": "Cabbage poriyal",
+    "ingredients": [
+      {
+        "name": "cabbage",
+        "amount": "400 g"
+      },
+      {
+        "name": "coconut",
+        "amount": "40 g"
+      },
+      {
+        "name": "mustard seeds",
+        "amount": "5 g"
+      },
+      {
+        "name": "curry leaves",
+        "amount": "4"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Heat oil, add mustard seeds and curry leaves, then add finely sliced cabbage. Cook until tender with a splash of water. Fold in coconut and season to taste.",
+    "source": "mealplanner:original",
+    "image": null
+  },
+  {
+    "id": "mp-chana",
+    "title": "Chana masala",
+    "ingredients": [
+      {
+        "name": "chickpea",
+        "amount": "400 g"
+      },
+      {
+        "name": "onion",
+        "amount": "1"
+      },
+      {
+        "name": "tomato",
+        "amount": "2"
+      },
+      {
+        "name": "garlic",
+        "amount": "2 cloves"
+      },
+      {
+        "name": "ginger",
+        "amount": "10 g"
+      },
+      {
+        "name": "ground coriander",
+        "amount": "5 g"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Cook chopped onion, garlic and ginger in oil. Add coriander and tomatoes and simmer until saucy. Add cooked chickpeas and water as needed; simmer for 15 minutes and season.",
+    "source": "mealplanner:original",
+    "image": null
+  },
+  {
+    "id": "mp-aloo",
+    "title": "Aloo gobi",
+    "ingredients": [
+      {
+        "name": "potato",
+        "amount": "2"
+      },
+      {
+        "name": "cauliflower",
+        "amount": "400 g"
+      },
+      {
+        "name": "onion",
+        "amount": "1"
+      },
+      {
+        "name": "tomato",
+        "amount": "1"
+      },
+      {
+        "name": "turmeric",
+        "amount": "2 g"
+      },
+      {
+        "name": "ground cumin",
+        "amount": "5 g"
+      },
+      {
+        "name": "oil",
+        "amount": "15 ml"
+      }
+    ],
+    "instructions": "Cook onion in oil until soft. Add turmeric, cumin and tomato, followed by diced potato and cauliflower. Cover and cook with a splash of water until tender, then season.",
+    "source": "mealplanner:original",
+    "image": null
   }
 ]

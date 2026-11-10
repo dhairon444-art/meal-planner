@@ -37,13 +37,14 @@ struct ShoppingItemEditor: View {
     @Environment(PantryStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     @State var item: ShoppingItem
+    @State private var choosingQuantity = false
     var body: some View {
         NavigationStack {
             Form {
                 TextField("Ingredient", text: $item.name)
-                TextField("Quantity, e.g. 500 g", text: $item.quantity)
+                Button { choosingQuantity = true } label: { LabeledContent("Quantity", value: item.quantity.isEmpty ? "Choose amount" : item.quantity) }
                 Toggle("Purchased", isOn: $item.purchased)
-            }.navigationTitle("Shopping item").toolbar {
+            }.navigationTitle("Shopping item").sheet(isPresented: $choosingQuantity) { QuantityWheel(name: item.name, initial: item.quantity) { item.quantity = $0 } }.toolbar {
                 ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
                 ToolbarItem(placement: .confirmationAction) { Button("Save") {
                     guard store.permitted(item.name) else { store.notice = "This item conflicts with your dietary restrictions."; return }

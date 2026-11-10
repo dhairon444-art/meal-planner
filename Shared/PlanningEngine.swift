@@ -21,7 +21,7 @@ struct FoodAmount: Equatable {
         guard numbers.count == pieces.count else { return nil }
         let value = numbers.reduce(0,+)
         let unit = String(text[ur])
-        let conversions: [String: (String, Double)] = ["":("",1), "g":("g",1), "gram":("g",1), "grams":("g",1), "kg":("g",1000), "mg":("g",0.001), "ml":("ml",1), "l":("ml",1000), "litre":("ml",1000), "litres":("ml",1000), "tsp":("ml",5), "tbsp":("ml",15), "cup":("ml",240), "cups":("ml",240), "oz":("g",28.3495), "lb":("g",453.592), "clove":("clove",1), "cloves":("clove",1), "tin":("tin",1), "tins":("tin",1), "can":("tin",1), "cans":("tin",1), "piece":("",1), "pieces":("",1)]
+        let conversions: [String: (String, Double)] = ["":("",1), "g":("g",1), "gram":("g",1), "grams":("g",1), "kg":("g",1000), "mg":("g",0.001), "ml":("ml",1), "l":("ml",1000), "litre":("ml",1000), "litres":("ml",1000), "tsp":("ml",5), "tbsp":("ml",15), "cup":("ml",240), "cups":("ml",240), "oz":("g",28.3495), "lb":("g",453.592), "clove":("clove",1), "cloves":("clove",1), "tin":("tin",1), "tins":("tin",1), "can":("tin",1), "cans":("tin",1), "piece":("",1), "pieces":("",1), "item":("",1), "items":("",1)]
         guard let c = conversions[unit], value.isFinite, value >= 0 else { return nil }
         return FoodAmount(value: value * c.1, unit: c.0)
     }

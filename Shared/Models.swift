@@ -121,7 +121,8 @@ enum PantryDisk {
     static func read() throws -> PantryData {
         guard FileManager.default.fileExists(atPath: url.path) else { var d = PantryData(); d.recipes = seedRecipes(); return d }
         var d = try JSONDecoder().decode(PantryData.self, from: Data(contentsOf: url))
-        if d.recipes.isEmpty { d.recipes = seedRecipes() }
+        let known = Set(d.recipes.map(\.id))
+        d.recipes.append(contentsOf: seedRecipes().filter { !known.contains($0.id) })
         return d
     }
     static func seedRecipes() -> [Recipe] {

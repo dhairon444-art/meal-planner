@@ -116,10 +116,10 @@ import WidgetKit
         save()
         notice = unknownServings ? "Meal saved. Set original recipe servings before deducting stock; pantry amounts were kept unchanged." : unchanged > 0 ? "Meal saved to history. \(unchanged) ingredient amounts need checking in your pantry." : "Meal saved to your cooking history."
     }
-    func importRecipes() async {
+    func importRecipes(indian: Bool = false) async {
         guard !importing else { return }; importing = true; defer { importing = false }
         do {
-            let ids = try await OnlineLibrary.vegetarianIDs(); let existing = Set(data.recipes.map(\.id)); let pending = ids.filter { !existing.contains($0) }
+            let ids = try await (indian ? OnlineLibrary.indianVegetarianIDs() : OnlineLibrary.vegetarianIDs()); let existing = Set(data.recipes.map(\.id)); let pending = ids.filter { !existing.contains($0) }
             var count = 0
             for (index, id) in pending.enumerated() {
                 try Task.checkCancellation(); importStatus = "Loading recipe \(index + 1) of \(pending.count)"

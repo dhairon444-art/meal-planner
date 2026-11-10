@@ -176,3 +176,5 @@ flowchart LR
 - 0.1.0: initial pantry, recipe library, shopping and widget prototype.
 - 0.1.1 (2): in-app version label and GitHub development workflow.
 - 0.2.0 (3): implement the chart’s profiles, image entry, independent recommendations, stock checks, weekly plans, serving adjustments, consolidated shopping, cooking feedback, freshness and backups. Cost/budget work deferred at user direction. Source-controlled rule and migration checks added.
+
+- 0.4.0 (5): added scrollable item-aware quantities, six original vegetarian Indian recipes, and targeted Indian vegetarian/vegan searches through TheMealDB.

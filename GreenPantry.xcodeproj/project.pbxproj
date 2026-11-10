@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		15071DCDD6C27C1A345AC4C1 /* QuantityPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6162D8B4ABCC0B66326A85D7 /* QuantityPicker.swift */; };
 		230F477B1194826C94D93589 /* PantryWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401D6709A65DCE3DB4E78650 /* PantryWidgets.swift */; };
 		310D562796D019D881CCFBED /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F931A4A45662D1B79FCC02 /* Models.swift */; };
 		43122CA64A0896CB56016675 /* SeedRecipes.json in Resources */ = {isa = PBXBuildFile; fileRef = 18E78CF34BEAA9DDC8179D81 /* SeedRecipes.json */; };
@@ -63,6 +64,7 @@
 		44E9E47C2102948E17BD7555 /* Intelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intelligence.swift; sourceTree = "<group>"; };
 		514D929790E95D60EA17CF7E /* GreenPantry.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GreenPantry.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B656A175540ACE42781C132 /* MealPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanView.swift; sourceTree = "<group>"; };
+		6162D8B4ABCC0B66326A85D7 /* QuantityPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuantityPicker.swift; sourceTree = "<group>"; };
 		9A3301EBAF52DF9F2FE43458 /* GreenPantryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenPantryApp.swift; sourceTree = "<group>"; };
 		9B45878D6FF4E5A4F1A66B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A3F931A4A45662D1B79FCC02 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
@@ -117,6 +119,7 @@
 				5B656A175540ACE42781C132 /* MealPlanView.swift */,
 				D45311B7C892A7FE8679FB9E /* NutritionView.swift */,
 				1075D14ADACBB67CC2C57A6F /* ProfileSettingsView.swift */,
+				6162D8B4ABCC0B66326A85D7 /* QuantityPicker.swift */,
 				079EE19F3EECBE2D55670AAC /* RecipeViews.swift */,
 				ADD36E037F9701E274D6F0C0 /* Services.swift */,
 				F75F1EFAE8FB92609178856B /* ShoppingView.swift */,
@@ -247,6 +250,7 @@
 				8731186C4A14A141B8647BA8 /* NutritionView.swift in Sources */,
 				8EB550301CE110E887E0F455 /* PlanningEngine.swift in Sources */,
 				7536C6B083C6B6E9B87742C7 /* ProfileSettingsView.swift in Sources */,
+				15071DCDD6C27C1A345AC4C1 /* QuantityPicker.swift in Sources */,
 				DA972F38861448F49E0642B5 /* RecipeViews.swift in Sources */,
 				F8CFAF50CA54949CD7A8EA53 /* Services.swift in Sources */,
 				94147B4DF3EB32B6F02CA501 /* ShoppingView.swift in Sources */,
@@ -329,7 +333,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = AP44Z9232D;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -349,7 +353,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -398,7 +402,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 4;
+				CURRENT_PROJECT_VERSION = 5;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = AP44Z9232D;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -412,7 +416,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.3.0;
+				MARKETING_VERSION = 0.4.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
