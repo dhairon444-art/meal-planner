@@ -29,14 +29,15 @@ enum PantryIntelligence {
         let response = try await session.respond(to: "Grocery entry:\n\(text)", generating: ParsedGroceries.self)
         return response.content.items.map { Grocery(name: $0.name, quantity: $0.quantity, category: $0.category) }
     }
-    static func substitutes(recipe: Recipe, groceries: [Grocery], excludeEggs: Bool) async throws -> [SubstituteIdea] {
-        let missing = IngredientRules.missing(recipe, in: groceries).map(\.name)
+    static func substitutes(recipe: Recipe, groceries: [Grocery], excludeEggs: Bool, factor: Double = 1, profile: UserProfile = UserProfile()) async throws -> [SubstituteIdea] {
+        let missing = StockEngine.shortfall(recipe, stock: groceries, factor: factor).map(\.name)
         let session = LanguageModelSession(instructions: "Suggest plausible vegetarian ingredient substitutions for this recipe using ONLY the provided pantry. Never use meat, fish, gelatin, animal stock or animal rennet. These are suggestions, never assurances about allergens. If no appropriate substitute exists, return no ideas. Do not claim substitutions are nutritionally equivalent.")
-        let response = try await session.respond(to: "Recipe: \(recipe.title)\nInstructions: \(recipe.instructions)\nMissing: \(missing.joined(separator: ", "))\nAvailable: \(groceries.map(\.name).joined(separator: ", "))\nExclude eggs: \(excludeEggs)", generating: SubstituteResponse.self)
+        let response = try await session.respond(to: "Recipe: \(recipe.title)\nInstructions: \(recipe.instructions)\nMissing: \(missing.joined(separator: ", "))\nAvailable: \(groceries.map(\.name).joined(separator: ", "))\nExclude eggs: \(excludeEggs)\nExcluded allergens: \(profile.allergens.joined(separator: ", "))\nOther exclusions: \(profile.avoidIngredients)\nDairy excluded: \(profile.dairyFree)", generating: SubstituteResponse.self)
         return response.content.ideas.filter { idea in
             missing.contains(where: { IngredientRules.key($0) == IngredientRules.key(idea.missingIngredient) }) &&
             IngredientRules.has(idea.availableReplacement, in: groceries) &&
             IngredientRules.isVegetarian(idea.availableReplacement) &&
+            !IngredientRules.conflicts(idea.availableReplacement, profile: profile, excludeEggs: excludeEggs) &&
             (!excludeEggs || !IngredientRules.containsEgg(idea.availableReplacement))
         }
     }

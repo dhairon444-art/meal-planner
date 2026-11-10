@@ -10,15 +10,21 @@
 		230F477B1194826C94D93589 /* PantryWidgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 401D6709A65DCE3DB4E78650 /* PantryWidgets.swift */; };
 		310D562796D019D881CCFBED /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F931A4A45662D1B79FCC02 /* Models.swift */; };
 		43122CA64A0896CB56016675 /* SeedRecipes.json in Resources */ = {isa = PBXBuildFile; fileRef = 18E78CF34BEAA9DDC8179D81 /* SeedRecipes.json */; };
+		4CB74C3F4DC84A18653D709F /* MealPlanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B656A175540ACE42781C132 /* MealPlanView.swift */; };
 		4E918BD0162D0F7D85262DF3 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A58A46E53D6B02009E18CA6 /* Store.swift */; };
 		6E9E85C121FB1A2C309DA364 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AAFC9213909554378458116 /* Assets.xcassets */; };
+		7536C6B083C6B6E9B87742C7 /* ProfileSettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1075D14ADACBB67CC2C57A6F /* ProfileSettingsView.swift */; };
 		86D676C17A1C4BA82E43EA48 /* PantryWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AE04F9355294884A7EACDCB3 /* PantryWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		8731186C4A14A141B8647BA8 /* NutritionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = D45311B7C892A7FE8679FB9E /* NutritionView.swift */; };
+		8EB550301CE110E887E0F455 /* PlanningEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087B0AD869003E3A469426CE /* PlanningEngine.swift */; };
+		94147B4DF3EB32B6F02CA501 /* ShoppingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F75F1EFAE8FB92609178856B /* ShoppingView.swift */; };
 		9AA4702D4032E56632BC48BC /* GreenPantryApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A3301EBAF52DF9F2FE43458 /* GreenPantryApp.swift */; };
 		9B8250AE53288C47DC6891EF /* Models.swift in Sources */ = {isa = PBXBuildFile; fileRef = A3F931A4A45662D1B79FCC02 /* Models.swift */; };
 		C450BED24C66AFB2E0F985A2 /* Intelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = 44E9E47C2102948E17BD7555 /* Intelligence.swift */; };
 		DA972F38861448F49E0642B5 /* RecipeViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 079EE19F3EECBE2D55670AAC /* RecipeViews.swift */; };
+		F0EF4571FD5901DA072FE9A3 /* PlanningEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 087B0AD869003E3A469426CE /* PlanningEngine.swift */; };
 		F8CFAF50CA54949CD7A8EA53 /* Services.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADD36E037F9701E274D6F0C0 /* Services.swift */; };
+		FFB40D253364BE6D44620A1B /* ImageEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = A696891A3ECE0E769DF0BC04 /* ImageEntry.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -47,6 +53,8 @@
 
 /* Begin PBXFileReference section */
 		079EE19F3EECBE2D55670AAC /* RecipeViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecipeViews.swift; sourceTree = "<group>"; };
+		087B0AD869003E3A469426CE /* PlanningEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanningEngine.swift; sourceTree = "<group>"; };
+		1075D14ADACBB67CC2C57A6F /* ProfileSettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileSettingsView.swift; sourceTree = "<group>"; };
 		18E78CF34BEAA9DDC8179D81 /* SeedRecipes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = SeedRecipes.json; sourceTree = "<group>"; };
 		1A58A46E53D6B02009E18CA6 /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
 		26FF7A7ACD44A5D1957BF8C7 /* GreenPantry.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = GreenPantry.entitlements; sourceTree = "<group>"; };
@@ -54,14 +62,17 @@
 		401D6709A65DCE3DB4E78650 /* PantryWidgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PantryWidgets.swift; sourceTree = "<group>"; };
 		44E9E47C2102948E17BD7555 /* Intelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Intelligence.swift; sourceTree = "<group>"; };
 		514D929790E95D60EA17CF7E /* GreenPantry.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = GreenPantry.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		5B656A175540ACE42781C132 /* MealPlanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealPlanView.swift; sourceTree = "<group>"; };
 		9A3301EBAF52DF9F2FE43458 /* GreenPantryApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GreenPantryApp.swift; sourceTree = "<group>"; };
 		9B45878D6FF4E5A4F1A66B87 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		A3F931A4A45662D1B79FCC02 /* Models.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Models.swift; sourceTree = "<group>"; };
+		A696891A3ECE0E769DF0BC04 /* ImageEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageEntry.swift; sourceTree = "<group>"; };
 		ADD36E037F9701E274D6F0C0 /* Services.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Services.swift; sourceTree = "<group>"; };
 		AE04F9355294884A7EACDCB3 /* PantryWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = PantryWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		C7F11CC30B962596FF4B9BAC /* PantryWidgets.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = PantryWidgets.entitlements; sourceTree = "<group>"; };
 		D45311B7C892A7FE8679FB9E /* NutritionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionView.swift; sourceTree = "<group>"; };
 		DB5E0174495CE8025C9BD0C2 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F75F1EFAE8FB92609178856B /* ShoppingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShoppingView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -79,6 +90,7 @@
 			isa = PBXGroup;
 			children = (
 				A3F931A4A45662D1B79FCC02 /* Models.swift */,
+				087B0AD869003E3A469426CE /* PlanningEngine.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -99,11 +111,15 @@
 				2AAFC9213909554378458116 /* Assets.xcassets */,
 				26FF7A7ACD44A5D1957BF8C7 /* GreenPantry.entitlements */,
 				9A3301EBAF52DF9F2FE43458 /* GreenPantryApp.swift */,
+				A696891A3ECE0E769DF0BC04 /* ImageEntry.swift */,
 				DB5E0174495CE8025C9BD0C2 /* Info.plist */,
 				44E9E47C2102948E17BD7555 /* Intelligence.swift */,
+				5B656A175540ACE42781C132 /* MealPlanView.swift */,
 				D45311B7C892A7FE8679FB9E /* NutritionView.swift */,
+				1075D14ADACBB67CC2C57A6F /* ProfileSettingsView.swift */,
 				079EE19F3EECBE2D55670AAC /* RecipeViews.swift */,
 				ADD36E037F9701E274D6F0C0 /* Services.swift */,
+				F75F1EFAE8FB92609178856B /* ShoppingView.swift */,
 				1A58A46E53D6B02009E18CA6 /* Store.swift */,
 				C368C8E1B798B74CA0ECDE7C /* Resources */,
 			);
@@ -224,11 +240,16 @@
 			buildActionMask = 2147483647;
 			files = (
 				9AA4702D4032E56632BC48BC /* GreenPantryApp.swift in Sources */,
+				FFB40D253364BE6D44620A1B /* ImageEntry.swift in Sources */,
 				C450BED24C66AFB2E0F985A2 /* Intelligence.swift in Sources */,
+				4CB74C3F4DC84A18653D709F /* MealPlanView.swift in Sources */,
 				310D562796D019D881CCFBED /* Models.swift in Sources */,
 				8731186C4A14A141B8647BA8 /* NutritionView.swift in Sources */,
+				8EB550301CE110E887E0F455 /* PlanningEngine.swift in Sources */,
+				7536C6B083C6B6E9B87742C7 /* ProfileSettingsView.swift in Sources */,
 				DA972F38861448F49E0642B5 /* RecipeViews.swift in Sources */,
 				F8CFAF50CA54949CD7A8EA53 /* Services.swift in Sources */,
+				94147B4DF3EB32B6F02CA501 /* ShoppingView.swift in Sources */,
 				4E918BD0162D0F7D85262DF3 /* Store.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -239,6 +260,7 @@
 			files = (
 				9B8250AE53288C47DC6891EF /* Models.swift in Sources */,
 				230F477B1194826C94D93589 /* PantryWidgets.swift in Sources */,
+				F0EF4571FD5901DA072FE9A3 /* PlanningEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -307,7 +329,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEVELOPMENT_TEAM = AP44Z9232D;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -327,7 +349,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.2.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -376,7 +398,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CODE_SIGN_STYLE = Automatic;
 				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 2;
+				CURRENT_PROJECT_VERSION = 3;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_TEAM = AP44Z9232D;
 				ENABLE_NS_ASSERTIONS = NO;
@@ -390,7 +412,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				MARKETING_VERSION = 0.1.1;
+				MARKETING_VERSION = 0.2.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -412,6 +434,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Meal Planner";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take a grocery or receipt photo to add ingredients to Meal Planner.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -451,6 +474,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = App/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Meal Planner";
+				INFOPLIST_KEY_NSCameraUsageDescription = "Take a grocery or receipt photo to add ingredients to Meal Planner.";
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

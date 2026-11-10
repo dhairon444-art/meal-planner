@@ -12,7 +12,10 @@ struct GroceryDetail: View {
             if let grocery {
                 Section("Ingredient") {
                     Text(grocery.name.capitalized).font(.title2.bold())
-                    Text(grocery.quantity.isEmpty ? "Quantity not set" : grocery.quantity)
+                    TextField("Quantity, e.g. 500 g", text: Binding(get: { self.grocery?.quantity ?? "" }, set: { value in edit { $0.quantity = value } }))
+                    Toggle("In stock", isOn: Binding(get: { self.grocery?.inStock != false }, set: { value in edit { $0.inStock = value } }))
+                    Toggle("Track use-by date", isOn: Binding(get: { self.grocery?.expiry != nil }, set: { value in edit { $0.expiry = value ? .now : nil } }))
+                    if grocery.expiry != nil { DatePicker("Use by", selection: Binding(get: { self.grocery?.expiry ?? .now }, set: { value in edit { $0.expiry = value } }), displayedComponents: .date) }
                     Text(grocery.category).foregroundStyle(.secondary)
                 }
                 if let nutrition = grocery.nutrition {
@@ -43,6 +46,9 @@ struct GroceryDetail: View {
                 }
             }
         }.navigationTitle("Ingredient").navigationBarTitleDisplayMode(.inline)
+    }
+    private func edit(_ change: (inout Grocery) -> Void) {
+        if let i = store.data.groceries.firstIndex(where: { $0.id == id }) { change(&store.data.groceries[i]); store.save() }
     }
     private func nutrient(_ title: String, value: Double?, unit: String) -> some View {
         HStack { Text(title); Spacer(); Text(value.map { String(format: "%.1f %@", $0, unit) } ?? "Not provided").foregroundStyle(.secondary) }

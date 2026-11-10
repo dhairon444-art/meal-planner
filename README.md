@@ -1,46 +1,52 @@
 # Meal Planner
 
-Private vegetarian iPhone app built with SwiftUI, Foundation Models, and WidgetKit. The first development build was installed on the paired iPhone on 11 November 2026. The display name is Meal Planner; the existing internal project and bundle identity remain unchanged to preserve updates and saved data.
+Private vegetarian iPhone app built in SwiftUI, with on-device Apple Intelligence and Home Screen widgets. Current development version: **0.2.0 (3)**.
 
-## First use
+The app is developed in Xcode and installed over the existing iPhone app. [Development checklist and Mermaid flows](Docs/DevelopmentPlan.md) track the planned features, implementation, tests and remaining decisions. Source history is in the private [GitHub repository](https://github.com/dhairon444-art/meal-planner).
 
-1. Open Meal Planner and tap **+** in My pantry.
-2. Enter groceries in natural language, then choose **Organize with Apple Intelligence**. Manual entry is available when Apple Intelligence is unavailable.
-3. Review the ingredient names, quantities, categories, and suggested USDA nutrition matches. Select the correct nutrition match before saving.
-4. Open Recipes to browse 86 bundled vegetarian recipes, ranked by missing ingredients. Download updates when online.
-5. Open a recipe to add missing ingredients to Shopping or request on-device substitution suggestions.
-6. On the Home Screen, choose Edit → Add Widget → Meal Planner. Shopping and recipe widgets open the corresponding app section.
+## Try the app
 
-Dairy and eggs are included by default. Settings offers an egg exclusion option. Existing pantry entries remain visible when that setting changes.
+1. In **Settings → Profile**, enter household size, tastes, dietary restrictions and allergies.
+2. In **Pantry**, tap **+**. Type items, choose a photo, or take a photo. Review recognized items and nutrition matches before saving. Use “I already have these items” only for food actually in stock.
+3. **Recipes** recommends meals from your tastes, favourites and cooking history. Each card shows the main ingredient. “Ready to cook” appears only when the full requirements can be matched against usable pantry stock; incomplete recipes have no missing-item prompt on their cards.
+4. In a recipe, save it as a favourite, add it to a meal plan, inspect ingredients, look for pantry substitutions, or record cooking and a rating.
+5. **Plan** lets you draft a week, add and swap meals, set servings, review the plan, and preview combined shopping ingredients. Enter original recipe servings where the source does not provide them before scaling a shopping list.
+6. In **Shopping**, check purchased items and explicitly move them into stock. Items merely listed for purchase do not count as available ingredients.
+7. **Settings** includes cooking history and JSON backup export/restore. Widgets are added from the iPhone Home Screen by searching for Meal Planner.
 
-## Current limits
+## Data and accuracy
 
-- This is a first development version. Recipe matching currently uses normalized ingredient names and a conservative alias list; it does not reconcile stock quantities, unit conversions, or serving sizes.
-- Substitutions are suggestions for review. Cheese, sauces, product labels, and dietary requirements still need checking.
-- Nutrition data is per 100 g, not calculated per consumed portion. USDA demo access is limited to 30 requests/hour and 50/day per IP address. Automatic lookup covers the first ten ingredients in a batch; other items can be looked up individually.
-- Home Screen widgets show a read-only snapshot and open the app when tapped. Inline shopping checkboxes are not included yet.
-- Pantry data stays on the phone. The app exports a JSON text backup through Settings; backup restore is not implemented yet.
-- The recipe catalogue is bundled and can download updates from TheMealDB. A separate custom backend has not been deployed.
-- Xcode generated seven-day development profiles for the current account. Refresh the app through Xcode before expiry. Reinstall over the existing app; do not delete it when refreshing.
+- The 86 bundled vegetarian recipes are available offline. TheMealDB provides recipe updates and source pages.
+- Grocery organization and substitution suggestions use the on-device Foundation Models framework when available. Manual grocery entry is available otherwise.
+- Photos are processed on-device with Vision. Text extraction and food-label suggestions can miss or misidentify items; review is required.
+- Nutrition facts come from USDA FoodData Central. Ingredient names are sent for lookup; choose the matching food and preparation. Values are per 100 g. Recipe totals are not invented when weights or nutrient coverage are incomplete.
+- Stock checks preserve ingredient distinctions, distinguish units and packages, account for quantities, and ignore out-of-stock or expired entries. Unknown quantitative requirements prevent readiness. Use-by dates are entered by the user.
+- Common dietary ingredient aliases are filtered, but recipe data does not certify allergens, manufacturing cross-contact, or product labels.
+- Camera recognition quality, AI response quality and Home Screen widget rendering still need hands-on testing on the paired iPhone.
 
-## Sources and access
+## Current development decisions
 
-Recipes: [TheMealDB](https://www.themealdb.com/api.php), using its development test key. Each recipe links to its original page. Public App Store release requires appropriate production access.
+Costs and budgets are deferred. They are absent from the current UI and planning rules. The development plan keeps them in the later-work checklist.
 
-Nutrition: [USDA FoodData Central](https://fdc.nal.usda.gov/api-guide/), public-domain data under CC0. This build uses the public DEMO_KEY. Ingredient names are sent to USDA for lookup; the pantry is not uploaded.
+Recipe-source servings, cooking time and equipment are not reliably supplied by TheMealDB. The app supports entering this information in Recipe details rather than inventing it. Health scoring, a separately hosted custom backend and household cloud sharing remain open decisions.
 
-AI: Apple's on-device Foundation Models framework. The app checks device availability at runtime and provides manual grocery entry when the model is not ready.
+Pantry, preferences, meal plans and history stay on the phone. Backups include them. Existing 0.1.x data is migrated. An unreadable save is preserved instead of being overwritten by an empty session.
 
-## Project and validation
+## Build and update
 
-Open `GreenPantry.xcodeproj` in Xcode. Select the GreenPantry scheme and your paired iPhone, then Run. Signing is configured for the existing local development team. `project.yml` recreates the project with XcodeGen.
+Open `GreenPantry.xcodeproj` in Xcode, select the GreenPantry scheme and paired iPhone, and choose Run. The product’s visible name is Meal Planner. Internal bundle identifiers remain unchanged to preserve installed data.
 
-The app and widget extension passed a signed physical-device build. Public recipe and nutrition endpoints responded successfully. Checks cover ingredient aliases, vegetarian filtering, eggplant/egg distinctions, missing-ingredient matching, the 86-recipe catalogue, and persistence encoding/decoding. On-device AI responses and widget rendering require further hands-on testing.
+`project.yml` is the XcodeGen source for the project, including version/build numbers. Regenerate after changes with `xcodegen generate`. Keep it in sync when changing version settings in Xcode.
 
-## Updating the app
+Use Git commits for completed changes and push them to the private repository. GitHub stores source history; it does not renew iPhone signing. The current personal development account uses seven-day profiles, so refresh through Xcode before expiry. Update the existing app without deleting it.
 
-Develop on the Mac in Xcode; use the iPhone to test the installed build. Select the paired iPhone and choose Run to update the existing app. Keep the bundle identifiers unchanged so updates retain pantry data. Do not delete the app to update it.
+## Checks
 
-Settings → About shows the installed version and build number. This build is version 0.1.1 (2). Increase the version for a user-facing release and the build number for each distributed test build. XcodeGen reads these values from `project.yml`; keep it in sync when changing version settings in Xcode.
+Run `Checks/run.sh` on a Mac with Xcode. Checks cover data migration, recommendation independence, dietary filters, quantities, stock readiness, expiry, stock deduction, meal-plan generation, shopping aggregation, purchased stock, cooking history and the 86-recipe catalogue. The signed app build is checked separately with Xcode.
 
-Local Git history records source changes independently of the installed app. Commit completed changes, then push them to the private GitHub repository. GitHub stores source history; it does not renew iPhone signing or install updates on the phone.
+## Sources
+
+- [TheMealDB API](https://www.themealdb.com/api.php): development test access, with per-recipe attribution. Public distribution requires appropriate production access.
+- [USDA FoodData Central](https://fdc.nal.usda.gov/api-guide/): public-domain nutrition data under CC0. Demo access is limited to 30 requests/hour and 50/day per IP address.
+- [Apple Foundation Models](https://developer.apple.com/documentation/FoundationModels): on-device language model integration.
+- [Apple Vision](https://developer.apple.com/documentation/vision): on-device text recognition and image classification.

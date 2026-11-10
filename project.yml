@@ -9,8 +9,8 @@ settings:
     TARGETED_DEVICE_FAMILY: '1'
     CODE_SIGN_STYLE: Automatic
     DEVELOPMENT_TEAM: AP44Z9232D
-    CURRENT_PROJECT_VERSION: '2'
-    MARKETING_VERSION: '0.1.1'
+    CURRENT_PROJECT_VERSION: '3'
+    MARKETING_VERSION: '0.2.0'
     SWIFT_STRICT_CONCURRENCY: complete
 targets:
   GreenPantry:
@@ -24,6 +24,7 @@ targets:
         INFOPLIST_KEY_CFBundleDisplayName: Meal Planner
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
         INFOPLIST_KEY_UILaunchScreen_Generation: YES
+        INFOPLIST_KEY_NSCameraUsageDescription: Take a grocery or receipt photo to add ingredients to Meal Planner.
     entitlements:
       path: App/GreenPantry.entitlements
       properties:

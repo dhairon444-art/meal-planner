@@ -17,13 +17,14 @@ struct PantryWidgetView: View {
     let recipeMode: Bool
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Label(recipeMode ? "Cook from your pantry" : "Shopping list", systemImage: recipeMode ? "leaf.fill" : "basket.fill")
+            Label(recipeMode ? "Recommended meal" : "Shopping list", systemImage: recipeMode ? "leaf.fill" : "basket.fill")
                 .font(.headline).foregroundStyle(.green)
             if recipeMode {
                 let recipes = entry.data.recipes.filter { !entry.data.excludeEggs || !$0.containsEgg }
                 if let recipe = recipes.min(by: { IngredientRules.missing($0, in: entry.data.groceries).count < IngredientRules.missing($1, in: entry.data.groceries).count }) {
                     Text(recipe.title).font(.headline)
-                    Text("\(IngredientRules.missing(recipe, in: entry.data.groceries).count) ingredients missing · check quantities").font(.caption).foregroundStyle(.secondary)
+                    Text("Main ingredient: \(recipe.mainIngredient)").font(.caption).foregroundStyle(.secondary)
+                    if StockEngine.ready(recipe, stock: entry.data.groceries) { Label("Ready to cook", systemImage: "checkmark.circle.fill").font(.caption).foregroundStyle(.green) }
                 } else { Text("Download vegetarian recipes in the app.").font(.caption) }
             } else {
                 let items = entry.data.shopping.filter { !$0.purchased }
@@ -55,6 +56,6 @@ struct ShoppingWidget: Widget {
 struct RecipeWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "GreenPantryRecipe", provider: PantryProvider()) { PantryWidgetView(entry: $0, recipeMode: true) }
-            .configurationDisplayName("Cook from your pantry").description("A vegetarian recipe matched to your ingredients.").supportedFamilies([.systemSmall, .systemMedium])
+            .configurationDisplayName("Recommended meal").description("A vegetarian suggestion based on your meal preferences.").supportedFamilies([.systemSmall, .systemMedium])
     }
 }

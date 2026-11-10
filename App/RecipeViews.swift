@@ -3,37 +3,48 @@ import SwiftUI
 struct RecipesView: View {
     @Environment(PantryStore.self) private var store
     @State private var search = ""
+    @State private var favouritesOnly = false
     var body: some View {
         NavigationStack {
             List {
                 Section {
-                    Label("Make more of what you have", systemImage: "sparkles").font(.headline).foregroundStyle(.green)
-                    Text("Recipes are ranked by missing ingredient names. Check quantities and dietary labels before cooking.").font(.caption).foregroundStyle(.secondary)
-                    Button { Task { await store.importRecipes() } } label: {
-                        if store.importing { ProgressView(store.importStatus) } else { Label("Download vegetarian recipes", systemImage: "arrow.down.circle") }
-                    }.disabled(store.importing)
+                    Label("Meals for you", systemImage: "sparkles").font(.title2.bold()).foregroundStyle(.green)
+                    Text(store.data.history.isEmpty && store.data.profile.preferredIngredients.isEmpty ? "Add your tastes in Profile, save favourites, and log meals to shape your recommendations." : "Suggestions follow your tastes, favourites, and cooking history.").font(.subheadline).foregroundStyle(.secondary)
+                    Toggle("Favourites only", isOn: $favouritesOnly)
+                }
+                ForEach(store.recipes.filter { (!favouritesOnly || store.data.favourites.contains($0.id)) && (search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }) }) { recipe in
+                    NavigationLink { RecipeDetail(recipe: recipe) } label: { RecipeCard(recipe: recipe) }
                 }
                 if store.recipes.isEmpty {
-                    ContentUnavailableView("Build your recipe library", systemImage: "book", description: Text("Download vegetarian recipes from TheMealDB. Your pantry stays on your phone."))
+                    ContentUnavailableView("No matching recipes", systemImage: "leaf", description: Text("Review your dietary restrictions or download more vegetarian recipes."))
                 }
-                ForEach(store.recipes.filter { search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) }) { recipe in
-                    NavigationLink { RecipeDetail(recipe: recipe) } label: {
-                        HStack(spacing: 14) {
-                            AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Rectangle().fill(.green.opacity(0.12)).overlay(Image(systemName: "leaf")) }
-                                .frame(width: 64, height: 64).clipShape(RoundedRectangle(cornerRadius: 12))
-                            VStack(alignment: .leading, spacing: 5) {
-                                Text(recipe.title).font(.headline)
-                                let missing = IngredientRules.missing(recipe, in: store.data.groceries)
-                                Text(missing.isEmpty ? "All ingredient names matched · check quantities" : "\(missing.count) of \(recipe.ingredients.count) ingredients missing")
-                                    .font(.caption).foregroundStyle(missing.isEmpty ? .green : .secondary)
-                            }
-                        }.padding(.vertical, 3)
-                    }
+                Section {
+                    Button { Task { await store.importRecipes() } } label: {
+                        if store.importing { ProgressView(store.importStatus) } else { Label("Update recipe library", systemImage: "arrow.down.circle") }
+                    }.disabled(store.importing)
+                    Link("Recipes provided by TheMealDB", destination: URL(string: "https://www.themealdb.com")!).font(.caption)
                 }
-                Section { Link("Recipes provided by TheMealDB", destination: URL(string: "https://www.themealdb.com")!).font(.caption) }
-            }
-            .navigationTitle("What’s cooking?").searchable(text: $search, prompt: "Find a vegetarian recipe")
+            }.navigationTitle("Recipes").searchable(text: $search, prompt: "Find a meal or ingredient")
+            .toolbar { NavigationLink { ProfileView() } label: { Image(systemName: "person.crop.circle") } }
         }
+    }
+}
+struct RecipeCard: View {
+    @Environment(PantryStore.self) private var store
+    let recipe: Recipe
+    var body: some View {
+        HStack(spacing: 14) {
+            AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Rectangle().fill(.green.opacity(0.12)).overlay(Image(systemName: "leaf")) }
+                .frame(width: 68, height: 68).clipShape(RoundedRectangle(cornerRadius: 14))
+            VStack(alignment: .leading, spacing: 5) {
+                Text(recipe.title).font(.headline)
+                Text("Main ingredient: \(recipe.mainIngredient)").font(.caption).foregroundStyle(.secondary)
+                if StockEngine.ready(recipe, stock: store.data.groceries) {
+                    Label("Ready to cook", systemImage: "checkmark.circle.fill").font(.caption.bold()).foregroundStyle(.green)
+                }
+            }
+            if store.data.favourites.contains(recipe.id) { Image(systemName: "heart.fill").foregroundStyle(.pink).font(.caption) }
+        }.padding(.vertical, 4)
     }
 }
 struct RecipeDetail: View {
@@ -42,135 +53,107 @@ struct RecipeDetail: View {
     @State private var ideas: [SubstituteIdea] = []
     @State private var busy = false
     @State private var error: String?
-    var missing: [Ingredient] { IngredientRules.missing(recipe, in: store.data.groceries) }
+    @State private var servings = 1
+    @State private var planning = false
+    @State private var editing = false
+    @State private var confirmCooking = false
+    @State private var deduct = true
+    var factor: Double { store.factor(recipe, servings: servings) }
+    var missing: [Ingredient] { StockEngine.shortfall(recipe, stock: store.data.groceries, factor: factor) }
     var body: some View {
         List {
             Section {
-                AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Color.green.opacity(0.12) }
-                    .frame(height: 210).clipped().listRowInsets(EdgeInsets())
+                AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Color.green.opacity(0.12) }.frame(height: 210).clipped().listRowInsets(EdgeInsets())
                 Text(recipe.title).font(.title2.bold())
-                Text("Vegetarian source category. Check cheese for vegetarian rennet, packaged sauces, allergens and quantities.").font(.caption).foregroundStyle(.secondary)
+                Text("Main ingredient: \(recipe.mainIngredient)").foregroundStyle(.secondary)
+                if StockEngine.ready(recipe, stock: store.data.groceries, factor: factor) { Label("Ready to cook", systemImage: "checkmark.circle.fill").foregroundStyle(.green) }
+                Button { store.toggleFavourite(recipe) } label: { Label(store.data.favourites.contains(recipe.id) ? "Saved to favourites" : "Save favourite", systemImage: store.data.favourites.contains(recipe.id) ? "heart.fill" : "heart") }
+                Stepper("Servings: \(servings)", value: $servings, in: 1...20)
+                if store.details(recipe).baseServings == nil {
+                    Text("Source servings are not provided. Set the original servings in Recipe details before scaling quantities.").font(.caption).foregroundStyle(.secondary)
+                }
+                Button("Recipe details & servings") { editing = true }
+                if let minutes = store.details(recipe).minutes { Label("\(minutes) minutes · your estimate", systemImage: "clock") }
+                Button("Add to meal plan", systemImage: "calendar.badge.plus") { planning = true }
             }
             Section("Ingredients") {
-                ForEach(recipe.ingredients) { ingredient in
+                ForEach(StockEngine.requirements(recipe, factor: factor), id: \.ingredient.id) { requirement in
                     HStack {
-                        Image(systemName: IngredientRules.has(ingredient.name, in: store.data.groceries) ? "checkmark.circle.fill" : "circle").foregroundStyle(.green)
-                        Text(ingredient.name.capitalized)
+                        Image(systemName: StockEngine.satisfies(requirement, stock: store.data.groceries) ? "checkmark.circle.fill" : "circle").foregroundStyle(.green)
+                        Text(requirement.ingredient.name.capitalized)
                         Spacer()
-                        Text(ingredient.amount).foregroundStyle(.secondary)
+                        Text(requirement.ingredient.amount).font(.subheadline).foregroundStyle(.secondary)
                     }
                 }
-                if !missing.isEmpty {
-                    Button("Add \(missing.count) missing ingredients to shopping") { store.buy(missing); store.notice = "Missing ingredients added to your shopping list." }
-                    Button { Task { await suggest() } } label: {
-                        if busy { ProgressView("Checking your pantry…") } else { Label("Find substitutes in my pantry", systemImage: "sparkles") }
-                    }.disabled(busy || !PantryIntelligence.available)
-                }
-                Text("Matches compare ingredient names, not available quantities. Review amounts before shopping or cooking.").font(.caption).foregroundStyle(.secondary)
+                Text("Stock checks use the quantities you entered. Package sizes and ingredient forms are kept distinct. Check product labels for allergens and vegetarian suitability.").font(.caption).foregroundStyle(.secondary)
             }
-            if let error { Section { Text(error).foregroundStyle(.secondary) } }
-            if !ideas.isEmpty {
-                Section("Suggested substitutions · review before use") {
-                    ForEach(ideas.indices, id: \.self) { i in
-                        VStack(alignment: .leading, spacing: 6) {
-                            Text("\(ideas[i].missingIngredient) → \(ideas[i].availableReplacement)").font(.headline)
-                            Text(ideas[i].explanation).font(.subheadline)
-                        }
-                    }
+            Section("Shopping & alternatives") {
+                if !missing.isEmpty {
+                    Button("Add required items to shopping") { store.buy(missing); store.notice = "Ingredients added to shopping. They will count as stock after you purchase and move them to the pantry." }
+                    Button { Task { await suggest() } } label: { if busy { ProgressView("Checking your pantry…") } else { Label("Find pantry substitutes", systemImage: "sparkles") } }.disabled(busy || !PantryIntelligence.available)
+                } else { Text("No additional ingredients needed for these quantities.").foregroundStyle(.secondary) }
+                if let error { Text(error).font(.caption) }
+                ForEach(ideas.indices, id: \.self) { i in
+                    VStack(alignment: .leading, spacing: 5) { Text("\(ideas[i].missingIngredient) → \(ideas[i].availableReplacement)").font(.headline); Text(ideas[i].explanation).font(.subheadline) }
                 }
             }
             Section("Method") { Text(recipe.instructions).textSelection(.enabled) }
+            Section("Nutrition") {
+                let linked = recipe.ingredients.compactMap { ingredient in store.data.groceries.first { IngredientRules.key($0.name) == IngredientRules.key(ingredient.name) && $0.nutrition != nil } }
+                if linked.isEmpty { Text("Link sourced nutrition facts from each pantry ingredient. Recipe totals need known weights and complete nutrition coverage.").font(.subheadline).foregroundStyle(.secondary) }
+                ForEach(Array(Dictionary(grouping: linked, by: \.id).values.compactMap(\.first))) { grocery in
+                    NavigationLink { GroceryDetail(id: grocery.id) } label: {
+                        VStack(alignment: .leading) { Text(grocery.name.capitalized); Text(grocery.nutrition?.calories.map { "\(FoodAmount.number($0)) kcal / 100 g · USDA" } ?? "Energy not provided").font(.caption).foregroundStyle(.secondary) }
+                    }
+                }
+            }
+            Section("Cook & learn") {
+                Toggle("Deduct measured ingredients from pantry", isOn: $deduct)
+                Button("I cooked this meal", systemImage: "checkmark.seal") { confirmCooking = true }
+                Picker("Your rating", selection: Binding(get: { store.data.ratings[recipe.id] ?? 0 }, set: { store.data.ratings[recipe.id] = $0; store.save() })) {
+                    Text("Not rated").tag(0)
+                    ForEach(1...5, id: \.self) { Text("\($0) / 5").tag($0) }
+                }
+            }
             Section { Link("View original on TheMealDB", destination: URL(string: recipe.source)!) }
-        }.navigationTitle("Recipe").navigationBarTitleDisplayMode(.inline)
+        }
+        .navigationTitle("Recipe").navigationBarTitleDisplayMode(.inline)
+        .onAppear { servings = store.data.profile.householdSize }
+        .sheet(isPresented: $planning) { PlanMealSheet(recipe: recipe, servings: servings) }
+        .sheet(isPresented: $editing) { RecipeMetadataView(recipe: recipe) }
+        .confirmationDialog("Record this cooked meal?", isPresented: $confirmCooking, titleVisibility: .visible) { Button("Record meal") { store.markCooked(recipe, servings: servings, deduct: deduct) } }
     }
     private func suggest() async {
-        busy = true; error = nil
-        defer { busy = false }
+        busy = true; error = nil; defer { busy = false }
         do {
-            ideas = try await PantryIntelligence.substitutes(recipe: recipe, groceries: store.data.groceries, excludeEggs: store.data.excludeEggs)
-            if ideas.isEmpty { error = "No suitable pantry substitutions were found. You can add the missing ingredients to shopping." }
+            ideas = try await PantryIntelligence.substitutes(recipe: recipe, groceries: store.data.groceries.filter { $0.available && store.permitted($0.name) }, excludeEggs: store.data.excludeEggs, factor: factor, profile: store.data.profile)
+            ideas = ideas.filter { store.permitted($0.availableReplacement) }
+            if ideas.isEmpty { error = "No suitable pantry substitutions were found." }
         } catch { self.error = "Could not suggest substitutes: \(error.localizedDescription)" }
     }
 }
-
-struct ShoppingView: View {
+struct RecipeMetadataView: View {
     @Environment(PantryStore.self) private var store
-    @State private var name = ""
+    @Environment(\.dismiss) private var dismiss
+    let recipe: Recipe
+    @State private var details = RecipeDetails()
     var body: some View {
-        NavigationStack {
-            List {
-                Section {
-                    HStack {
-                        TextField("Add an item", text: $name)
-                        Button("Add", systemImage: "plus.circle.fill") {
-                            let value = name.trimmingCharacters(in: .whitespacesAndNewlines)
-                            guard IngredientRules.isVegetarian(value), (!store.data.excludeEggs || !IngredientRules.containsEgg(value)) else { store.notice = "Please add vegetarian ingredients consistent with your settings."; return }
-                            store.buy([Ingredient(name: value, amount: "")]); name = ""
-                        }.disabled(name.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
-                    }
-                }
-                if store.data.shopping.isEmpty {
-                    ContentUnavailableView("Nothing to buy yet", systemImage: "basket", description: Text("Missing recipe ingredients will appear here when you add them."))
-                }
-                ForEach(store.data.shopping) { item in
-                    Button {
-                        if let index = store.data.shopping.firstIndex(where: { $0.id == item.id }) {
-                            store.data.shopping[index].purchased.toggle(); store.save()
-                        }
-                    } label: {
-                        HStack {
-                            Image(systemName: item.purchased ? "checkmark.circle.fill" : "circle").foregroundStyle(.green)
-                            Text(item.name.capitalized).strikethrough(item.purchased).foregroundStyle(.primary)
-                            Spacer()
-                            Text(item.quantity).font(.caption).foregroundStyle(.secondary)
-                        }
-                    }.swipeActions { Button("Delete", role: .destructive) { store.data.shopping.removeAll { $0.id == item.id }; store.save() } }
-                }
-                if store.data.shopping.contains(where: \.purchased) {
-                    Section {
-                        Button("Move purchased items to pantry") {
-                            let bought = store.data.shopping.filter(\.purchased)
-                            store.data.groceries.append(contentsOf: bought.map { Grocery(name: $0.name, quantity: $0.quantity, category: "Other") })
-                            store.data.shopping.removeAll(where: \.purchased); store.save()
-                        }
-                    }
-                }
-            }.navigationTitle("Shopping list")
-        }
-    }
-}
-
-struct SettingsView: View {
-    @Environment(PantryStore.self) private var store
-    var body: some View {
-        @Bindable var store = store
         NavigationStack {
             Form {
-                Section("About") {
-                    LabeledContent("App", value: "Meal Planner")
-                    LabeledContent("Version", value: "\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"))")
+                Section("Your recipe notes") {
+                    Text("Enter information you know about this recipe. These values are your estimates, not facts supplied by the recipe library.").font(.caption).foregroundStyle(.secondary)
+                    TextField("Original servings", value: $details.baseServings, format: .number).keyboardType(.numberPad)
+                    TextField("Cooking time in minutes", value: $details.minutes, format: .number).keyboardType(.numberPad)
+                    TextField("Cuisine", text: $details.cuisine)
+                    TextField("Equipment, comma separated", text: $details.equipment)
                 }
-                Section("Diet") {
-                    Label("Vegetarian", systemImage: "leaf.fill").foregroundStyle(.green)
-                    Toggle("Exclude eggs", isOn: $store.data.excludeEggs).onChange(of: store.data.excludeEggs) { _, _ in store.save() }
-                    Text("Dairy is included. Excluding eggs filters recipes and new entries; review existing pantry and shopping items separately.").font(.caption).foregroundStyle(.secondary)
-                }
-                Section("On-device intelligence") { Text(PantryIntelligence.status) }
-                Section("Widgets") {
-                    Text("Touch and hold your Home Screen, choose Edit → Add Widget, then find Meal Planner. Choose your shopping list or a recipe suggestion.")
-                }
-                Section("Privacy & data") {
-                    Text("Your pantry stays on this device. Recipe downloads contact TheMealDB. Nutrition searches send the ingredient name to USDA FoodData Central. Substitution suggestions use Apple’s on-device model.")
-                    ShareLink("Export pantry backup", item: backup)
-                    Text("Keep a backup before removing or reinstalling the app.").font(.caption).foregroundStyle(.secondary)
-                }
-                Section("Libraries") {
-                    Link("TheMealDB · recipe source", destination: URL(string: "https://www.themealdb.com/api.php")!)
-                    Link("USDA FoodData Central · nutrition source", destination: URL(string: "https://fdc.nal.usda.gov")!)
-                    Text("This development build uses TheMealDB’s test access and USDA’s limited demo access. Nutrition values are per 100 g and require you to confirm the food match.").font(.caption).foregroundStyle(.secondary)
-                }
-            }.navigationTitle("Settings")
+                Text("Volume estimates: teaspoon 5 ml, tablespoon 15 ml, cup 240 ml. No weight-to-volume conversion is assumed.").font(.caption).foregroundStyle(.secondary)
+            }.navigationTitle("Recipe details").navigationBarTitleDisplayMode(.inline)
+            .onAppear { details = store.details(recipe) }
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) { Button("Cancel") { dismiss() } }
+                ToolbarItem(placement: .confirmationAction) { Button("Save") { store.data.recipeDetails[recipe.id] = details; store.data.planApproved = false; store.save(); dismiss() }.disabled((details.baseServings ?? 1) < 1 || (details.baseServings ?? 1) > 100 || (details.minutes ?? 1) < 1) }
+            }
         }
     }
-    var backup: String { String(data: (try? JSONEncoder().encode(store.data)) ?? Data(), encoding: .utf8) ?? "" }
 }
