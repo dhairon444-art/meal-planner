@@ -4,15 +4,17 @@ struct RecipesView: View {
     @Environment(PantryStore.self) private var store
     @State private var search = ""
     @State private var favouritesOnly = false
+    @State private var discover = false
     var body: some View {
         NavigationStack {
             List {
                 Section {
                     Label("Meals for you", systemImage: "sparkles").font(.title2.bold()).foregroundStyle(.green)
-                    Text(store.data.history.isEmpty && store.data.profile.preferredIngredients.isEmpty ? "Add your tastes in Profile, save favourites, and log meals to shape your recommendations." : "Suggestions follow your tastes, favourites, and cooking history.").font(.subheadline).foregroundStyle(.secondary)
+                    Text(discover ? "Explore vegetarian recipes." : "Meals using ingredients in your pantry.").font(.subheadline).foregroundStyle(.secondary)
+                    Picker("Recipes", selection: $discover) { Text("From my pantry").tag(false); Text("Discover").tag(true) }.pickerStyle(.segmented)
                     Toggle("Favourites only", isOn: $favouritesOnly)
                 }
-                ForEach(store.recipes.filter { (!favouritesOnly || store.data.favourites.contains($0.id)) && (search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }) }) { recipe in
+                ForEach(store.recipes.filter { (discover || ($0.ingredients.contains { IngredientRules.has($0.name, in: store.data.groceries) })) && (!favouritesOnly || store.data.favourites.contains($0.id)) && (search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }) }) { recipe in
                     NavigationLink { RecipeDetail(recipe: recipe) } label: { RecipeCard(recipe: recipe) }
                 }
                 if store.recipes.isEmpty {
@@ -33,18 +35,13 @@ struct RecipeCard: View {
     @Environment(PantryStore.self) private var store
     let recipe: Recipe
     var body: some View {
-        HStack(spacing: 14) {
+        VStack(alignment: .leading, spacing: 8) {
             AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Rectangle().fill(.green.opacity(0.12)).overlay(Image(systemName: "leaf")) }
-                .frame(width: 68, height: 68).clipShape(RoundedRectangle(cornerRadius: 14))
-            VStack(alignment: .leading, spacing: 5) {
-                Text(recipe.title).font(.headline)
-                Text("Main ingredient: \(recipe.mainIngredient)").font(.caption).foregroundStyle(.secondary)
-                if StockEngine.ready(recipe, stock: store.data.groceries) {
-                    Label("Ready to cook", systemImage: "checkmark.circle.fill").font(.caption.bold()).foregroundStyle(.green)
-                }
-            }
-            if store.data.favourites.contains(recipe.id) { Image(systemName: "heart.fill").foregroundStyle(.pink).font(.caption) }
-        }.padding(.vertical, 4)
+                .frame(height: 190).frame(maxWidth: .infinity).clipped().clipShape(RoundedRectangle(cornerRadius: 16))
+            HStack { Text(recipe.title).font(.headline); Spacer(); if store.data.favourites.contains(recipe.id) { Image(systemName: "heart.fill").foregroundStyle(.pink) } }
+            Text("Main ingredient: \(recipe.mainIngredient)").font(.caption).foregroundStyle(.secondary)
+            if StockEngine.ready(recipe, stock: store.data.groceries) { Label("Ready to cook", systemImage: "checkmark.circle.fill").font(.caption.bold()).foregroundStyle(.green) }
+        }.padding(.vertical, 5)
     }
 }
 struct RecipeDetail: View {

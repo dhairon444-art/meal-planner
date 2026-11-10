@@ -3,6 +3,8 @@ import SwiftUI
 struct MealPlanView: View {
     @Environment(PantryStore.self) private var store
     @State private var choosing = false
+    @State private var chosenDate = Date.now
+    @State private var chosenSlot = "Dinner"
     @State private var shoppingPreview = false
     @State private var confirmDraft = false
     var days: [Date] { (0..<7).compactMap { Calendar.current.date(byAdding: .day, value: $0, to: Calendar.current.startOfDay(for: store.data.planningStart)) } }
@@ -18,23 +20,25 @@ struct MealPlanView: View {
                     Button("Draft a week for me", systemImage: "sparkles") { confirmDraft = true }
                     Text("Drafts use your preferences, history, restrictions, and any cooking time or equipment information you have entered. Review meals before approving.").font(.caption).foregroundStyle(.secondary)
                 }
-                ForEach(days, id: \.self) { date in
-                    Section(date.formatted(.dateTime.weekday(.wide).month().day())) {
-                        let meals = weekMeals.filter { Calendar.current.isDate($0.date, inSameDayAs: date) }.sorted { slotOrder($0.slot) < slotOrder($1.slot) }
-                        if meals.isEmpty { Text("No meals planned").foregroundStyle(.secondary) }
-                        ForEach(meals) { meal in
-                            if let recipe = store.data.recipes.first(where: { $0.id == meal.recipeID }) {
-                                NavigationLink { PlannedMealDetail(mealID: meal.id, recipe: recipe) } label: {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("\(meal.slot) · \(meal.servings) servings").font(.caption).foregroundStyle(.secondary)
-                                        Text(recipe.title).font(.headline)
-                                        if meal.completed { Label("Cooked", systemImage: "checkmark.circle.fill").font(.caption).foregroundStyle(.green) }
-                                        if !RecommendationEngine.allowed(recipe, data: store.data) { Text("Review: restrictions have changed").font(.caption).foregroundStyle(.orange) }
+                Section("Your week") {
+                    HStack(spacing: 3) {
+                        ForEach(days, id: \.self) { date in
+                            VStack(spacing: 3) {
+                                Text(date.formatted(.dateTime.weekday(.abbreviated))).font(.caption2.bold()).lineLimit(1)
+                                Text(date.formatted(.dateTime.day())).font(.caption2).foregroundStyle(.secondary)
+                                ForEach(["Breakfast", "Lunch", "Dinner"], id: \.self) { slot in
+                                    if let meal = weekMeals.first(where: { Calendar.current.isDate($0.date, inSameDayAs: date) && $0.slot == slot }), let recipe = store.data.recipes.first(where: { $0.id == meal.recipeID }) {
+                                        NavigationLink { PlannedMealDetail(mealID: meal.id, recipe: recipe) } label: {
+                                            AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Color.green.opacity(0.12).overlay(Image(systemName: "fork.knife").font(.caption)) }
+                                                .frame(maxWidth: .infinity).frame(height: 58).clipped().clipShape(RoundedRectangle(cornerRadius: 8))
+                                        }.buttonStyle(.plain).accessibilityLabel("\(slot): \(recipe.title)")
+                                    } else {
+                                        Button { chosenDate = date; chosenSlot = slot; choosing = true } label: { RoundedRectangle(cornerRadius: 8).fill(Color.green.opacity(0.07)).frame(height: 58).overlay(Image(systemName: "plus").font(.caption).foregroundStyle(.green)) }.buttonStyle(.plain).accessibilityLabel("Add \(slot) on \(date.formatted(date: .abbreviated, time: .omitted))")
                                     }
-                                }.swipeActions { Button("Remove", role: .destructive) { store.data.plans.removeAll { $0.id == meal.id }; store.data.planApproved = false; store.save() } }
-                            }
+                                }
+                            }.frame(maxWidth: .infinity)
                         }
-                    }
+                    }.listRowInsets(EdgeInsets(top: 8, leading: 4, bottom: 8, trailing: 4))
                 }
                 if !weekMeals.isEmpty {
                     Section("Review your week") {
@@ -44,8 +48,8 @@ struct MealPlanView: View {
                     }
                 }
             }.navigationTitle("Meal plan")
-            .toolbar { Button("Add meal", systemImage: "plus") { choosing = true } }
-            .sheet(isPresented: $choosing) { ChooseRecipeForPlan() }
+            .toolbar { Button("Add meal", systemImage: "plus") { chosenDate = store.data.planningStart; chosenSlot = "Dinner"; choosing = true } }
+            .sheet(isPresented: $choosing) { ChooseRecipeForPlan(initialDate: chosenDate, initialSlot: chosenSlot) }
             .sheet(isPresented: $shoppingPreview) { PlanShoppingPreview() }
             .confirmationDialog("Draft meals for this week?", isPresented: $confirmDraft, titleVisibility: .visible) {
                 Button("Replace this week’s uncompleted meals") { store.generatePlan() }
@@ -55,11 +59,13 @@ struct MealPlanView: View {
     private func slotOrder(_ slot: String) -> Int { ["Breakfast", "Lunch", "Dinner"].firstIndex(of: slot) ?? 3 }
 }
 struct ChooseRecipeForPlan: View {
+    var initialDate: Date = .now
+    var initialSlot = "Dinner"
     @Environment(PantryStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     var body: some View {
         NavigationStack {
-            List(store.recipes) { recipe in NavigationLink { PlanMealSheetContent(recipe: recipe, initialServings: store.data.profile.householdSize, onSaved: { dismiss() }) } label: { RecipeCard(recipe: recipe) } }
+            List(store.recipes) { recipe in NavigationLink { PlanMealSheetContent(recipe: recipe, initialServings: store.data.profile.householdSize, initialDate: initialDate, initialSlot: initialSlot, onSaved: { dismiss() }) } label: { RecipeCard(recipe: recipe) } }
                 .navigationTitle("Choose a meal").toolbar { Button("Done") { dismiss() } }
         }
     }
@@ -74,6 +80,8 @@ struct PlanMealSheetContent: View {
     @Environment(PantryStore.self) private var store
     let recipe: Recipe
     let initialServings: Int
+    var initialDate: Date = .now
+    var initialSlot = "Dinner"
     let onSaved: () -> Void
     @State private var date = Date.now
     @State private var slot = "Dinner"
@@ -86,7 +94,7 @@ struct PlanMealSheetContent: View {
             Stepper("Servings: \(servings)", value: $servings, in: 1...20)
             Text("Saving replaces any meal already in the same day and slot. Completed meals are kept in your history.").font(.caption).foregroundStyle(.secondary)
             Button("Save to plan") { store.plan(recipe, date: date, slot: slot, servings: servings); onSaved() }
-        }.navigationTitle("Plan a meal").onAppear { servings = initialServings }
+        }.navigationTitle("Plan a meal").onAppear { servings = initialServings; date = initialDate; slot = initialSlot }
     }
 }
 struct PlannedMealDetail: View {
