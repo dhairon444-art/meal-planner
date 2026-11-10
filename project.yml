@@ -1,0 +1,65 @@
+name: GreenPantry
+options:
+  bundleIdPrefix: com.sourav.greenpantry
+  deploymentTarget:
+    iOS: '26.0'
+settings:
+  base:
+    SWIFT_VERSION: '6.0'
+    TARGETED_DEVICE_FAMILY: '1'
+    CODE_SIGN_STYLE: Automatic
+    DEVELOPMENT_TEAM: AP44Z9232D
+    CURRENT_PROJECT_VERSION: '1'
+    MARKETING_VERSION: '0.1.0'
+    SWIFT_STRICT_CONCURRENCY: complete
+targets:
+  GreenPantry:
+    type: application
+    platform: iOS
+    sources: [App, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sourav.greenpantry
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Meal Planner
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        INFOPLIST_KEY_UILaunchScreen_Generation: YES
+    entitlements:
+      path: App/GreenPantry.entitlements
+      properties:
+        keychain-access-groups: ['$(AppIdentifierPrefix)com.sourav.greenpantry.shared']
+    info:
+      path: App/Info.plist
+      properties:
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait, UIInterfaceOrientationPortraitUpsideDown, UIInterfaceOrientationLandscapeLeft, UIInterfaceOrientationLandscapeRight]
+        CFBundleURLTypes:
+          - CFBundleURLSchemes: [greenpantry]
+            CFBundleURLName: com.sourav.greenpantry
+        SharedAccessGroup: '$(AppIdentifierPrefix)com.sourav.greenpantry.shared'
+    dependencies:
+      - target: PantryWidgets
+  PantryWidgets:
+    type: app-extension
+    platform: iOS
+    sources: [Widgets, Shared]
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.sourav.greenpantry.widgets
+        GENERATE_INFOPLIST_FILE: YES
+        INFOPLIST_KEY_CFBundleDisplayName: Meal Planner Widgets
+        SKIP_INSTALL: YES
+    info:
+      path: Widgets/Info.plist
+      properties:
+        SharedAccessGroup: '$(AppIdentifierPrefix)com.sourav.greenpantry.shared'
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: Widgets/PantryWidgets.entitlements
+      properties:
+        keychain-access-groups: ['$(AppIdentifierPrefix)com.sourav.greenpantry.shared']
+schemes:
+  GreenPantry:
+    build:
+      targets:
+        GreenPantry: all
