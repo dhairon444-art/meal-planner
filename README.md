@@ -36,3 +36,11 @@ AI: Apple's on-device Foundation Models framework. The app checks device availab
 Open `GreenPantry.xcodeproj` in Xcode. Select the GreenPantry scheme and your paired iPhone, then Run. Signing is configured for the existing local development team. `project.yml` recreates the project with XcodeGen.
 
 The app and widget extension passed a signed physical-device build. Public recipe and nutrition endpoints responded successfully. Checks cover ingredient aliases, vegetarian filtering, eggplant/egg distinctions, missing-ingredient matching, the 86-recipe catalogue, and persistence encoding/decoding. On-device AI responses and widget rendering require further hands-on testing.
+
+## Updating the app
+
+Develop on the Mac in Xcode; use the iPhone to test the installed build. Select the paired iPhone and choose Run to update the existing app. Keep the bundle identifiers unchanged so updates retain pantry data. Do not delete the app to update it.
+
+Settings → About shows the installed version and build number. This build is version 0.1.1 (2). Increase the version for a user-facing release and the build number for each distributed test build. XcodeGen reads these values from `project.yml`; keep it in sync when changing version settings in Xcode.
+
+Local Git history records source changes independently of the installed app. Commit completed changes, then push them to the private GitHub repository. GitHub stores source history; it does not renew iPhone signing or install updates on the phone.

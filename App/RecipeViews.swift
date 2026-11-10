@@ -146,6 +146,10 @@ struct SettingsView: View {
         @Bindable var store = store
         NavigationStack {
             Form {
+                Section("About") {
+                    LabeledContent("App", value: "Meal Planner")
+                    LabeledContent("Version", value: "\(Bundle.main.object(forInfoDictionaryKey: "CFBundleShortVersionString") as? String ?? "—") (\(Bundle.main.object(forInfoDictionaryKey: "CFBundleVersion") as? String ?? "—"))")
+                }
                 Section("Diet") {
                     Label("Vegetarian", systemImage: "leaf.fill").foregroundStyle(.green)
                     Toggle("Exclude eggs", isOn: $store.data.excludeEggs).onChange(of: store.data.excludeEggs) { _, _ in store.save() }

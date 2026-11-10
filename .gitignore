@@ -1,4 +1,13 @@
+# Local Xcode files and build outputs
 .DS_Store
 xcuserdata/
 DerivedData/
 *.xcuserstate
+build/
+
+# Local credentials and signing exports
+.env
+.env.*
+*.p12
+*.p8
+*.mobileprovision
