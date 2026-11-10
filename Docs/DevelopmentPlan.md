@@ -190,3 +190,7 @@ The selected day’s morning, afternoon and evening are grouped in one section b
 ## 0.7.0 update · 11 November 2026
 
 Recipe results use compact rows with ingredient counts and sourced total times. The recipe page uses an image-led layout, Ingredients/Steps/Notes navigation, numbered source instructions, and an action bar outside the content for planning and groceries. Prep and cook times are displayed where explicitly present in the imported source. Meal-type editing is available by long-pressing a recipe in Discover.
+
+## 0.8.0 update · 11 November 2026
+
+Recipe Steps includes an on-device AI guide with visual Prep and Cooking sections, source-checked heat/time labels, refresh and original-method fallback. Discover includes attributed links to Indian vegetarian chef libraries; they open external pages and are not integrated as pantry-matched recipes. Hands-on AI output verification remains.

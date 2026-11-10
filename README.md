@@ -1,6 +1,6 @@
 # Meal Planner
 
-Private vegetarian iPhone app built in SwiftUI, with on-device Apple Intelligence and Home Screen widgets. Current development version: **0.7.0 (8)**.
+Private vegetarian iPhone app built in SwiftUI, with on-device Apple Intelligence and Home Screen widgets. Current development version: **0.8.0 (9)**.
 
 The app is developed in Xcode and installed over the existing iPhone app. [Development checklist and Mermaid flows](Docs/DevelopmentPlan.md) track the planned features, implementation, tests and remaining decisions. Source history is in the private [GitHub repository](https://github.com/dhairon444-art/meal-planner).
 
@@ -68,3 +68,9 @@ Discover includes All, Breakfast, Snacks, Lunch and Dinner filters. Suggested ty
 ## Recipe layout
 
 Recipe rows show the ingredient count and any available total time. Recipe pages display source prep and cooking times when provided, with Ingredients, Steps, and Notes sections. Method text is presented as numbered steps without adding instructions. Add to plan and Groceries remain in a separate action bar. Long-press a recipe in Discover to edit meal-type labels.
+
+## Visual cooking guide
+
+Open a recipe and choose Steps. Apple Intelligence creates a visual Prep and Cooking guide on the iPhone. Heat and time labels are shown as unspecified unless they can be found in the original method. AI can make mistakes; the original method remains available for checking. The guide is generated when opened and can be refreshed. If Apple Intelligence is unavailable, use the original method.
+
+Discover links to Indian vegetarian recipes by Dassana Amit and Sanjeev Kapoor. These links open the chefs’ websites; their complete catalogues are not imported into the app.
