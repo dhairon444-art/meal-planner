@@ -88,6 +88,14 @@ import Foundation
         auto.removeSelectedRecipe(second)
         check(!auto.data.shopping.contains(where: { $0.name == "tomato" }), "Removing a selection removes its excess requirement")
         check(auto.data.shopping.contains(where: { $0.name == "bread" }), "Removing selected recipe preserves manual shopping")
+        let breakfast = Recipe(id: "breakfast", title: "Kanda Poha", ingredients: [Ingredient(name: "poha", amount: "1 cup")], instructions: "Cook.", source: "", image: nil)
+        let snack = Recipe(id: "snack", title: "Suji Poha Bites", ingredients: [Ingredient(name: "poha", amount: "1 cup")], instructions: "Cook.", source: "", image: nil)
+        check(MealTypeEngine.types(breakfast, details: nil).contains("Breakfast"), "Breakfast suggestion")
+        check(MealTypeEngine.types(snack, details: nil).contains("Snacks"), "Snack suggestion")
+        var customDetails = RecipeDetails(); customDetails.mealTypes = ["Dinner"]
+        check(MealTypeEngine.types(breakfast, details: customDetails) == ["Dinner"], "User override takes priority")
+        customDetails.mealTypes = []
+        check(MealTypeEngine.types(breakfast, details: customDetails).isEmpty, "User may clear categories")
         let url = URL(fileURLWithPath: CommandLine.arguments.count > 1 ? CommandLine.arguments[1] : "App/Resources/SeedRecipes.json")
         let recipes = try JSONDecoder().decode([Recipe].self, from: Data(contentsOf: url))
         check(recipes.count >= 109 && Set(recipes.map(\.id)).count == recipes.count, "Recipe catalogue integrity")

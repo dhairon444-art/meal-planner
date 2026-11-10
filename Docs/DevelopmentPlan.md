@@ -182,3 +182,7 @@ flowchart LR
 ## 0.5.0 decision update · 11 November 2026
 
 Recipes is the first tab and opens on Discover. Groceries is accessed from the Recipes toolbar; Pantry and Shopping remain together. Selecting a recipe or adding it to a meal slot automatically combines all selected recipe requirements and subtracts pantry stock once, preserving manually added shopping entries. Plan shows a calendar above image-only morning, afternoon and evening slots. Seventeen recipes from iCloud Drive/Downloads/Meals are bundled with source servings where available. These decisions replace older navigation and shopping-preview descriptions above. Recipe photographs for the personal imports remain to be created.
+
+## 0.6.0 decision update · 11 November 2026
+
+The selected day’s morning, afternoon and evening are grouped in one section below the calendar. Recipe details have a prominent Add to meal plan action. Discover includes All, Breakfast, Snacks, Lunch and Dinner filters, with editable suggested classifications.

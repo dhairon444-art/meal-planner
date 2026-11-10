@@ -6,6 +6,8 @@ struct RecipesView: View {
     @State private var search = ""
     @State private var favouritesOnly = false
     @State private var discover = true
+    @State private var mealType = "All"
+    @State private var addRecipe: Recipe?
     var body: some View {
         NavigationStack {
             List {
@@ -13,10 +15,19 @@ struct RecipesView: View {
                     Label("Meals for you", systemImage: "sparkles").font(.title2.bold()).foregroundStyle(.green)
                     Text(discover ? "Explore vegetarian recipes." : "Meals using ingredients in your pantry.").font(.subheadline).foregroundStyle(.secondary)
                     Picker("Recipes", selection: $discover) { Text("From my pantry").tag(false); Text("Discover").tag(true) }.pickerStyle(.segmented)
+                    if discover {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack { ForEach(["All"] + MealTypeEngine.choices, id: \.self) { type in
+                                Button(type) { mealType = type }.buttonStyle(.bordered).tint(mealType == type ? .green : .gray)
+                            } }
+                        }
+                        Text("Meal types are suggestions. You can adjust them in a recipe’s details.").font(.caption).foregroundStyle(.secondary)
+                    }
                     Toggle("Favourites only", isOn: $favouritesOnly)
                 }
-                ForEach(store.recipes.filter { (discover || ($0.ingredients.contains { IngredientRules.has($0.name, in: store.data.groceries) })) && (!favouritesOnly || store.data.favourites.contains($0.id)) && (search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }) }) { recipe in
+                ForEach(store.recipes.filter { (!discover || mealType == "All" || MealTypeEngine.types($0, details: store.data.recipeDetails[$0.id]).contains(mealType)) && (discover || ($0.ingredients.contains { IngredientRules.has($0.name, in: store.data.groceries) })) && (!favouritesOnly || store.data.favourites.contains($0.id)) && (search.isEmpty || $0.title.localizedCaseInsensitiveContains(search) || $0.ingredients.contains { $0.name.localizedCaseInsensitiveContains(search) }) }) { recipe in
                     NavigationLink { RecipeDetail(recipe: recipe) } label: { RecipeCard(recipe: recipe) }
+                        .swipeActions(edge: .trailing) { Button("Add to plan", systemImage: "calendar.badge.plus") { addRecipe = recipe }.tint(.green) }
                 }
                 if store.recipes.isEmpty {
                     ContentUnavailableView("No matching recipes", systemImage: "leaf", description: Text("Review your dietary restrictions or download more vegetarian recipes."))
@@ -29,6 +40,7 @@ struct RecipesView: View {
                     Link("Recipes provided by TheMealDB", destination: URL(string: "https://www.themealdb.com")!).font(.caption)
                 }
             }.navigationTitle("Recipes").searchable(text: $search, prompt: "Find a meal or ingredient")
+            .sheet(item: $addRecipe) { PlanMealSheet(recipe: $0, servings: store.data.profile.householdSize) }
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) { Button { showingGroceries = true } label: { Label("Groceries", systemImage: "basket") } }
                 ToolbarItem(placement: .topBarTrailing) { NavigationLink { ProfileView() } label: { Image(systemName: "person.crop.circle") } }
@@ -68,6 +80,7 @@ struct RecipeDetail: View {
                 AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { image in image.resizable().scaledToFill() } placeholder: { Color.green.opacity(0.12) }.frame(height: 210).clipped().listRowInsets(EdgeInsets())
                 Text(recipe.title).font(.title2.bold())
                 Text("Main ingredient: \(recipe.mainIngredient)").foregroundStyle(.secondary)
+                Button("Add to meal plan", systemImage: "plus.circle.fill") { planning = true }.buttonStyle(.borderedProminent)
                 if StockEngine.ready(recipe, stock: store.data.groceries, factor: factor) { Label("Ready to cook", systemImage: "checkmark.circle.fill").foregroundStyle(.green) }
                 Button { store.toggleFavourite(recipe) } label: { Label(store.data.favourites.contains(recipe.id) ? "Saved to favourites" : "Save favourite", systemImage: store.data.favourites.contains(recipe.id) ? "heart.fill" : "heart") }
                 Stepper("Servings: \(servings)", value: $servings, in: 1...20)
@@ -81,7 +94,6 @@ struct RecipeDetail: View {
                 } else {
                     Button("Add ingredients to groceries", systemImage: "basket.badge.plus") { store.selectRecipe(recipe); store.notice = "Missing ingredients were added to Shopping, accounting for your pantry and other selected recipes." }
                 }
-                Button("Add to meal plan", systemImage: "calendar.badge.plus") { planning = true }
             }
             Section("Ingredients") {
                 ForEach(StockEngine.requirements(recipe, factor: factor), id: \.ingredient.id) { requirement in
@@ -156,6 +168,16 @@ struct RecipeMetadataView: View {
                     TextField("Original servings", value: $details.baseServings, format: .number).keyboardType(.numberPad)
                     TextField("Cooking time in minutes", value: $details.minutes, format: .number).keyboardType(.numberPad)
                     TextField("Cuisine", text: $details.cuisine)
+                    Section("Meal types") {
+                        ForEach(MealTypeEngine.choices, id: \.self) { type in
+                            Toggle(type, isOn: Binding(get: { (details.mealTypes ?? MealTypeEngine.types(recipe, details: nil)).contains(type) }, set: { enabled in
+                                var selected = details.mealTypes ?? MealTypeEngine.types(recipe, details: nil)
+                                if enabled && !selected.contains(type) { selected.append(type) }
+                                if !enabled { selected.removeAll { $0 == type } }
+                                details.mealTypes = selected
+                            }))
+                        }
+                    }
                     TextField("Equipment, comma separated", text: $details.equipment)
                 }
                 Text("Volume estimates: teaspoon 5 ml, tablespoon 15 ml, cup 240 ml. No weight-to-volume conversion is assumed.").font(.caption).foregroundStyle(.secondary)

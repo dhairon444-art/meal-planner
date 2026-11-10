@@ -64,6 +64,7 @@ struct RecipeDetails: Codable, Hashable {
     var cuisine = ""
     var equipment = ""
     var estimatedCost: Double?
+    var mealTypes: [String]?
 }
 struct PlannedMeal: Codable, Identifiable, Hashable {
     var id = UUID()

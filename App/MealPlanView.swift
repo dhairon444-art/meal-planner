@@ -12,17 +12,20 @@ struct MealPlanView: View {
                     DatePicker("Choose a day", selection: $selectedDate, displayedComponents: .date)
                         .datePickerStyle(.graphical).labelsHidden()
                 }
-                ForEach(["Breakfast", "Lunch", "Dinner"], id: \.self) { slot in
-                    Section(slot == "Breakfast" ? "Morning" : slot == "Lunch" ? "Afternoon" : "Evening") {
+                Section("Meals for \(selectedDate.formatted(date: .abbreviated, time: .omitted))") {
+                    ForEach(["Breakfast", "Lunch", "Dinner"], id: \.self) { slot in
+                        HStack(alignment: .center) {
+                            Text(slot == "Breakfast" ? "Morning" : slot == "Lunch" ? "Afternoon" : "Evening").font(.headline).frame(width: 90, alignment: .leading)
                         if let meal = store.data.plans.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) && $0.slot == slot }), let recipe = store.data.recipes.first(where: { $0.id == meal.recipeID }) {
                             NavigationLink { PlannedMealDetail(mealID: meal.id, recipe: recipe) } label: {
                                 AsyncImage(url: recipe.image.flatMap(URL.init(string:))) { $0.resizable().scaledToFill() } placeholder: { Color.green.opacity(0.1).overlay(Image(systemName: "fork.knife").font(.title)) }
-                                    .frame(height: 155).frame(maxWidth: .infinity).clipped().clipShape(RoundedRectangle(cornerRadius: 14))
+                                    .frame(height: 100).frame(maxWidth: .infinity).clipped().clipShape(RoundedRectangle(cornerRadius: 14))
                             }.accessibilityLabel("\(slot): \(recipe.title)")
                         } else {
                             Button { chosenSlot = slot; choosing = true } label: {
-                                RoundedRectangle(cornerRadius: 14).fill(Color.green.opacity(0.08)).frame(height: 110).overlay(Image(systemName: "plus.circle").font(.title).foregroundStyle(.green))
+                                RoundedRectangle(cornerRadius: 14).fill(Color.green.opacity(0.08)).frame(height: 100).overlay(Image(systemName: "plus.circle").font(.title).foregroundStyle(.green))
                             }.buttonStyle(.plain).accessibilityLabel("Add \(slot)")
+                        }
                         }
                     }
                 }

@@ -152,3 +152,19 @@ enum ShoppingEngine {
         return result
     }
 }
+
+
+enum MealTypeEngine {
+    static let choices = ["Breakfast", "Snacks", "Lunch", "Dinner"]
+    static func types(_ recipe: Recipe, details: RecipeDetails?) -> [String] {
+        if let saved = details?.mealTypes { return saved }
+        let title = recipe.title.lowercased()
+        let breakfast = ["poha", "breakfast", "pancake", "porridge", "oatmeal", "dosa", "idli", "upma", "smoothie", "toast"]
+        let snacks = ["snack", "tikki", "fritter", "pakora", "samosa", "bites", "dip", "latkes", "lemonade"]
+        var result: [String] = []
+        if breakfast.contains(where: { title.contains($0) }) { result.append("Breakfast") }
+        if snacks.contains(where: { title.contains($0) }) { result.append("Snacks") }
+        if result.isEmpty { result = ["Lunch", "Dinner"] }
+        return result
+    }
+}
